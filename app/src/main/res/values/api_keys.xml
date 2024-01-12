@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="API_URL">https://waghuzctpmgexykusmhi.supabase.co</string>
-    <string name="API_TOKEN">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZ2h1emN0cG1nZXh5a3VzbWhpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY4Nzk0NDU2NCwiZXhwIjoyMDAzNTIwNTY0fQ.1UuyNzF1li_bntWP3qgG6wsWnhsJJ8jNICdjXF4tR18</string>
-</resources>
