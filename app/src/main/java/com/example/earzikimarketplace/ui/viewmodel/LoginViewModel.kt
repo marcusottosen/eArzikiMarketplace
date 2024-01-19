@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.earzikimarket.R
-import com.example.earzikimarket.data.model.dataClass.UserSignUp
-import com.example.earzikimarket.data.model.supabaseAdapter.SupabaseManager
-import com.example.earzikimarket.data.model.supabaseAdapter.UserRepository
-import com.example.earzikimarket.data.model.supabaseAdapter.storeUserData
+import com.example.earzikimarketplace.R
+import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
+import com.example.earzikimarketplace.data.model.supabaseAdapter.UserRepository
+import com.example.earzikimarketplace.data.model.supabaseAdapter.storeUserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

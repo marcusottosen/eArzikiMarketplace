@@ -1,4 +1,4 @@
-package com.example.earzikimarket.ui.view.pages.login
+package com.example.earzikimarketplace.ui.view.pages.login
 
 import android.util.Patterns
 import androidx.compose.foundation.layout.*
@@ -20,8 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.earzikimarket.ui.viewmodel.LoginViewModel
-import com.example.earzikimarket.data.util.NavigationRoute
+import com.example.earzikimarketplace.data.util.NavigationRoute
+import com.example.earzikimarketplace.ui.viewmodel.LoginViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
