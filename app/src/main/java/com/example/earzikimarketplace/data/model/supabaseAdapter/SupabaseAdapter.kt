@@ -2,7 +2,6 @@ package com.example.earzikimarketplace.data.model.supabaseAdapter
 
 import android.content.Context
 import android.util.Log
-import com.example.earzikimarket.data.model.dataClass.Listing
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.GoTrue
