@@ -1,4 +1,4 @@
-package com.example.earzikimarketplace.data.model
+package com.example.earzikimarketplace.data.model.dataClasss
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
