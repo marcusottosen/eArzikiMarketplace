@@ -3,7 +3,7 @@ package com.example.earzikimarketplace.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.earzikimarketplace.data.model.dataClasss.Listing
+import com.example.earzikimarketplace.data.model.dataClass.Listing
 
 class SharedViewModel : ViewModel() {
     private val _listing = MutableLiveData<Listing>()

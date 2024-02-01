@@ -1,4 +1,4 @@
-package com.example.earzikimarketplace.data.model.dataClasss
+package com.example.earzikimarketplace.data.model.dataClass
 
 import com.example.earzikimarket.R
 
