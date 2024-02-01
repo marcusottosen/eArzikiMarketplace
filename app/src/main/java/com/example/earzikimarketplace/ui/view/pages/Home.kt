@@ -22,13 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.earzikimarket.R
 import com.example.earzikimarketplace.data.model.dataClass.DBCategory
 import com.example.earzikimarketplace.ui.view.reuseables.CategoryCard
 import com.example.earzikimarketplace.ui.view.reuseables.OfferCard
 import com.example.earzikimarketplace.ui.viewmodel.HomeViewModel
 import com.example.earzikimarketplace.data.util.NavigationRoute
-import com.example.earzikimarketplace.data.model.dataClass.DBCategory
-import com.example.earzikimarketplace.ui.view.reuseables.CategoryCard
 
 @Composable
 fun Home(navController: NavController) {
