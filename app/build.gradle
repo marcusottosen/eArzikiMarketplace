@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    namespace 'com.example.earzikimarket'
+    namespace 'com.example.earzikimarketplace'
 
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.earzikimarket"
+        applicationId "com.example.earzikimarketplace"
         minSdk 23
         targetSdk 33
         versionCode 1
@@ -21,10 +21,17 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+    android {
+        bundle {
+            language {
+                enableSplit = false
+            }
+        }
+    }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
         }
     }

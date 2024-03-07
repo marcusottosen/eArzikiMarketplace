@@ -67,7 +67,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.ui.view.reuseables.FullScreenImageDialog
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel

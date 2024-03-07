@@ -28,15 +28,6 @@ class AddItemViewModel() : ViewModel() {
         _addItemStatus.value = AddItemStatus.Idle
     }
 
-    //private val _selectedImageUri = MutableLiveData<Uri?>()
-    //val selectedImageUri: LiveData<Uri?> get() = _selectedImageUri
-    //fun pickImageFromGallery(launcher: ActivityResultLauncher<String>) {
-    //    launcher.launch("image/*")
-    //}
-    //fun setSelectedImageUri(uri: Uri?) {
-    //    _selectedImageUri.value = uri
-    //}
-
 
     private val _selectedImageUris = MutableLiveData<List<Uri>>(emptyList())
     val selectedImageUris: LiveData<List<Uri>> get() = _selectedImageUris
@@ -54,7 +45,6 @@ class AddItemViewModel() : ViewModel() {
         // Clear the selected image URIs
         _selectedImageUris.value = emptyList()
         //_addItemStatus.value = AddItemStatus.Idle
-        // Reset other state as needed, such as the temporaryListing
         temporaryListing = null
     }
 
@@ -73,6 +63,7 @@ class AddItemViewModel() : ViewModel() {
     // Stores the listing until images has been added too.
     var temporaryListing: Listing? = null
     fun prepareListing(listing: Listing) {
+        Log.d("AddItemViewModel", "Preparing listing: $listing")
         temporaryListing = listing
     }
 
@@ -83,54 +74,8 @@ class AddItemViewModel() : ViewModel() {
         class Error(val message: String) : AddItemStatus()
     }
 
-    // Function to upload image and add item
-    /*fun uploadImageAndAddItem(context: Context) {
-        if (temporaryListing != null) {
-            val listing = temporaryListing ?: return
-            _addItemStatus.value = AddItemStatus.Loading
-            viewModelScope.launch {
-                val imageUri = _selectedImageUri.value ?: return@launch
-
-                try {
-                    val userInfo =
-                        SupabaseManager.getLoggedInUser() // retrieves user info from the database
-
-                    // Convert Uri to ByteArray
-                    val imageByteArray = convertUriToByteArray(context, imageUri)
-
-                    // Upload image to Supabase Storage
-                    val imageUrl = listingsDB.uploadImageToSupabase(imageByteArray, userInfo.id)
-
-                    // Update listing with image URL and add it to the database
-                    //val updatedListing = temporaryListing?.copy(image_urls = listOf(imageUrl))
-                    //updatedListing?.let { listingsDB.addItem(it) }
-                    Log.d("MarketplaceViewModel", "Adding item: $listing")
-                    //val userInfo = getUserInfo(apiKey, apiUrl) // retrieves user info from the database
-
-                    val updatedListing = Listing(
-                        user_id = UUID.fromString(userInfo.id),
-                        title = listing.title,
-                        description = listing.description,
-                        price = listing.price,
-                        category_id = listing.category_id,
-                        image_urls = listing.image_urls
-                    )
-                    listingsDB.addItem(updatedListing)   // Adds item to database
-                    val updatedItems = (_items.value.orEmpty() + updatedListing).toMutableList()
-                    _items.value = updatedItems
-
-                    _addItemStatus.value = AddItemStatus.Success
-                    listener?.onItemAddedSuccess()
-                } catch (e: Exception) {
-                    Log.e("MarketplaceViewModel", "Error: ${e.message}")
-                    _addItemStatus.value = AddItemStatus.Error(e.message ?: "Unknown error")
-                    listener?.onError("Error: ${e.message}")
-                }
-            }
-        }
-    }*/
-
     fun uploadImagesAndAddItem(context: Context) {
+        Log.d("AddItemViewModel", "uploadImagesAndAddItem: $temporaryListing")
         viewModelScope.launch {
             _addItemStatus.value = AddItemStatus.Loading
             val imageUris = _selectedImageUris.value ?: return@launch
@@ -143,6 +88,7 @@ class AddItemViewModel() : ViewModel() {
                 }
 
                 val updatedListing = temporaryListing?.copy(image_urls = imageUrls)
+                Log.d("MarketplaceViewModel", "Adding item: $updatedListing")
                 updatedListing?.let { listingsDB.addItem(it) }
 
                 _addItemStatus.value = AddItemStatus.Success
@@ -165,45 +111,8 @@ class AddItemViewModel() : ViewModel() {
         // Compress the bitmap
         val outputStream = ByteArrayOutputStream()
         // You can adjust the quality parameter (0-100) as needed
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
 
         return outputStream.toByteArray()
     }
 }
-
-/*
-    fun addItem() { // listing: Listing
-        if (temporaryListing != null) {
-            val listing = temporaryListing ?: return
-            viewModelScope.launch {
-                _addItemStatus.value = AddItemStatus.Loading
-                try {
-                    Log.d("MarketplaceViewModel", "Adding item: $listing")
-                    //val userInfo = getUserInfo(apiKey, apiUrl) // retrieves user info from the database
-                    val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info from the database
-
-                    val updatedListing = Listing(
-                        user_id = UUID.fromString(userInfo.id),
-                        title = listing.title,
-                        description = listing.description,
-                        price = listing.price,
-                        category_id = listing.category_id,
-                        image_urls = listing.image_urls
-                    )
-
-                    listingsDB.addItem(updatedListing)   // Adds item to database
-                    val updatedItems = (_items.value.orEmpty() + updatedListing).toMutableList()
-                    _items.value = updatedItems
-
-                    _addItemStatus.value = AddItemStatus.Success // Set to success after adding
-                    listener?.onItemAddedSuccess()  // Notify success by toast
-
-                } catch (e: Exception) {
-                    Log.e("MarketplaceViewModel", "Error adding item: ${e.message}")
-                    _addItemStatus.value = AddItemStatus.Error(e.message ?: "Unknown error")
-                    listener?.onError("Error adding item: ${e.message}")  // Notify the listener about the error
-                }
-            }
-        }
-    }
- */

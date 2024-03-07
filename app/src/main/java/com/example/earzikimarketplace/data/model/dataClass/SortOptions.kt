@@ -1,7 +1,7 @@
 package com.example.earzikimarketplace.data.model.dataClass
 
 import androidx.annotation.StringRes
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 
 enum class SortOption(val id: Int, @StringRes val resourceId: Int) {
     NearestItems(0, R.string.nearest_items),

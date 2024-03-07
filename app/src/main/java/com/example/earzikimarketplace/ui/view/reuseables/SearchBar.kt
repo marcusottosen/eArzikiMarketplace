@@ -31,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 
 @Composable
 fun SearchBar(

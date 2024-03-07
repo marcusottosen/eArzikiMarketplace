@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.viewmodel.AddItemViewModel
 import kotlinx.coroutines.delay
@@ -32,6 +32,18 @@ import kotlinx.coroutines.delay
 fun AddItemStatusScreen(navController: NavController, viewModel: AddItemViewModel) {
 
     val addItemStatus by viewModel.addItemStatus.collectAsState()
+
+    // This LaunchedEffect is dedicated to the loading state
+    /*LaunchedEffect(key1 = addItemStatus, key2 = viewModel) {
+        if (addItemStatus is AddItemViewModel.AddItemStatus.Loading) {
+            // Keep the loading icon for at least 2 seconds
+            delay(4000)
+            // After the delay, if the status is still Loading, update it to Success
+            if (addItemStatus is AddItemViewModel.AddItemStatus.Loading) {
+                viewModel.updateStatus(AddItemViewModel.AddItemStatus.Success)
+            }
+        }
+    }*/
 
     // This LaunchedEffect is dedicated to the success state
     LaunchedEffect(key1 = addItemStatus) {

@@ -3,7 +3,7 @@ package com.example.earzikimarketplace.data.model.dataClass
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 
 data class TagItem(
     val category: String,

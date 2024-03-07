@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.DBCategory
 import com.example.earzikimarketplace.ui.view.reuseables.CategoryCard
 import com.example.earzikimarketplace.ui.view.reuseables.OfferCard

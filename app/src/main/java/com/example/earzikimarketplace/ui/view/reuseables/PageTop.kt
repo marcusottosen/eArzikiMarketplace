@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 
 @Composable
 fun PageTop(navController: NavController, title: String) {

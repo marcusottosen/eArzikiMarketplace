@@ -47,11 +47,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.FullScreenImageDialog
 import com.example.earzikimarketplace.ui.view.reuseables.PageTop
@@ -70,7 +72,7 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
 
     Scaffold(
         topBar = {
-            PageTop(navController, "Create ad")
+            PageTop(navController, stringResource(R.string.create_ad))
         }
     ) { paddingValues ->
         Box(modifier = Modifier
@@ -83,7 +85,7 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                     .align(Alignment.TopCenter)
             ) {
                 Text(
-                    text = "Add your photos",
+                    text = stringResource(R.string.add_your_photos),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -113,7 +115,8 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
             Button(
                 onClick = {
                     if (viewModel.selectedImageUris.value.isNullOrEmpty()) {
-                        Toast.makeText(context, "Please choose at least one image", Toast.LENGTH_SHORT)
+                        Toast.makeText(context,
+                            R.string.please_choose_at_least_one_image, Toast.LENGTH_SHORT)
                             .show()
                         return@Button
                     }
@@ -128,7 +131,7 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                     .padding(16.dp),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Post item")
+                Text(stringResource(R.string.post_item))
             }
 
         }
@@ -191,5 +194,3 @@ fun ImagePickerBox(
         }
     }
 }
-
-

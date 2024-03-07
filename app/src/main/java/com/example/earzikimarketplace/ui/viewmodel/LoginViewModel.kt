@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.model.supabaseAdapter.UserRepository

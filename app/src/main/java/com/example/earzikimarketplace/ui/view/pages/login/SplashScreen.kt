@@ -10,9 +10,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun SplashScreen() {
-    // This composable function will show a splash screen with your app logo
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // Replace with your app logo or splash screen UI
         Text(text = "App Logo", fontSize = 24.sp)
     }
 }

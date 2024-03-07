@@ -2,7 +2,7 @@ package com.example.earzikimarketplace.data.model.dataClass
 
 import android.content.Context
 import androidx.annotation.StringRes
-import com.example.earzikimarket.R
+import com.example.earzikimarketplace.R
 
 class UninitializedCountException : Exception("Count not initialized")
 

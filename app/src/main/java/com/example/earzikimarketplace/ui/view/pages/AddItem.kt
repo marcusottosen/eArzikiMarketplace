@@ -21,9 +21,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.util.NavigationRoute
@@ -42,10 +44,11 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
     //val addItemStatus by viewModel.addItemStatus.collectAsState()
 
 
+
     // Toast manager
     viewModel.listener = object : MarketplaceViewModel.MarketplaceListener {
         override fun onItemAddedSuccess() {
-            Toast.makeText(context, "Item added successfully!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Item added successfully!", Toast.LENGTH_SHORT).show()
         }
 
         override fun onError(message: String) {
@@ -53,9 +56,9 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
         }
     }
 
-    val titleState = remember { mutableStateOf("title") }
-    val descriptionState = remember { mutableStateOf("description") }
-    val priceState = remember { mutableStateOf("123") }
+    val titleState = remember { mutableStateOf("Handcrafted Wooden Sculpture") }
+    val descriptionState = remember { mutableStateOf("Handcrafted wooden sculpture depicting traditional motifs and symbols, a unique piece of art for collectors or enthusiasts.") }
+    val priceState = remember { mutableStateOf("3999") }
     val isNumber = remember(priceState.value) { priceState.value.toFloatOrNull() != null }
 
     val categoryState = remember { mutableStateOf<CategoryEnum?>(CategoryEnum.HOME_CRAFTS) } // default = null
@@ -63,7 +66,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
 
     Scaffold(
         topBar = {
-            PageTop(navController, "Create Ad")
+            PageTop(navController, stringResource(R.string.create_ad))
         }
     ) { paddingValues ->
         Box(
@@ -81,7 +84,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 OutlinedTextField(
                     value = titleState.value,
                     onValueChange = { titleState.value = it },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(R.string.add_item_title)) },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -92,7 +95,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 OutlinedTextField(
                     value = descriptionState.value,
                     onValueChange = { descriptionState.value = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(R.string.add_item_description)) },
                     maxLines = 7,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -103,11 +106,12 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 // Category
                 // Dropdown for selecting category
                 var expanded by remember { mutableStateOf(false) }
-                val categories = CategoryEnum.values().map { it.title }
+                val categories = CategoryEnum.values().map { it.getTitle(context) }
+
                 OutlinedTextField(
-                    value = categoryState.value?.title ?: "",
+                    value = categoryState.value?.getTitle(context) ?: "",
                     onValueChange = {},
-                    label = { Text("Category") },
+                    label = { Text(stringResource(R.string.add_item_category)) },
                     readOnly = true,
                     trailingIcon = {
                         Icon(
@@ -127,7 +131,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                             text = { Text(category) },
                             onClick = {
                                 categoryState.value =
-                                    CategoryEnum.values().find { it.title == category }
+                                    CategoryEnum.values().find { it.getTitle(context) == category }
                                 expanded = false
                             }
                         )
@@ -137,7 +141,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 OutlinedTextField(
                     value = priceState.value,
                     onValueChange = { priceState.value = it },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(R.string.add_item_price)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
@@ -153,7 +157,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 )
                 if (!isNumber && priceState.value.isNotEmpty()) {
                     Text(
-                        text = "Please enter a valid number",
+                        text = stringResource(R.string.please_enter_a_valid_number),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp, top = 4.dp)
@@ -167,7 +171,8 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
             Button(
                 onClick = {
                     if (titleState.value.isBlank() || descriptionState.value.isBlank() || priceState.value.isBlank() || categoryState.value == null) {
-                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT)
+                        Toast.makeText(context,
+                            R.string.please_fill_all_fields, Toast.LENGTH_SHORT)
                             .show()
                         return@Button
                     }
@@ -175,7 +180,8 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                     // Convert price to float
                     val price = priceState.value.toFloatOrNull()
                     if (price == null) {
-                        Toast.makeText(context, "Invalid price", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            R.string.invalid_price, Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
@@ -199,7 +205,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                     .padding(16.dp),
                 shape = RoundedCornerShape(8.dp) // more squared corners
             ) {
-                Text("Next")
+                Text(stringResource(R.string.next))
             }
 
         }
@@ -207,42 +213,4 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
 
     }
 }
-
-/*Button(
-           onClick = {
-               if (titleState.value.isBlank() || descriptionState.value.isBlank() || priceState.value.isBlank() || categoryState.value == null) {
-                   Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                   return@Button
-               }
-
-               // Convert price to float
-               val price = priceState.value.toFloatOrNull()
-               if (price == null) {
-                   Toast.makeText(context, "Invalid price", Toast.LENGTH_SHORT).show()
-                   return@Button
-               }
-
-               val newListing = Listing(
-                   title = titleState.value,
-                   description = descriptionState.value,
-                   price = price,
-                   category_id = categoryState.value!!.id,
-                   image_urls = imageUrlsState.value
-               )
-               viewModel.addItem(context, newListing)
-           },
-           modifier = Modifier.align(Alignment.CenterHorizontally)
-       ) {
-           Text("Create Item")
-       }*/
-
-
-// Observing the addItemStatus
-/*LaunchedEffect(addItemStatus) {
-if (addItemStatus is AddItemStatus.Success) {
-    navController.popBackStack()
-    // Reset the status if needed
-    viewModel.resetAddItemStatus()
-}
-}*/
 
