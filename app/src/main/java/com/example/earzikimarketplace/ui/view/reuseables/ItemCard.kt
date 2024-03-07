@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.earzikimarket.R
-import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import com.example.earzikimarketplace.data.util.NavigationRoute
