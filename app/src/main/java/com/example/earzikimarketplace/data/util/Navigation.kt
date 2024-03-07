@@ -87,9 +87,8 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             AddItemImagePicker(navController, addItemViewModel)
         }
         composable(NavigationRoute.AddItemStatusScreen.route) {
-            NavigationRoute.AddItemStatusScreen(navController, addItemViewModel)
+            AddItemStatusScreen(navController, addItemViewModel)
             //addItemViewModel.resetAfterUpload()
-
         }
 
 
