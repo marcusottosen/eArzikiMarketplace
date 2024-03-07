@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     )
 
 
-                    Navigation(navController = navController, sharedViewModel = sharedViewModel)
+                    Navigation(navController = navController, sharedViewModel = sharedViewModel, context = context)
                 }
             }
         }

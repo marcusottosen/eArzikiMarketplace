@@ -1,5 +1,7 @@
 package com.example.earzikimarketplace.data.model.supabaseAdapter
 
+import androidx.navigation.NavController
+import com.example.earzikimarketplace.data.util.NavigationRoute
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.GoTrue
@@ -10,8 +12,6 @@ import io.github.jan.supabase.postgrest.PropertyConversionMethod
 import io.github.jan.supabase.storage.Storage
 import kotlin.time.Duration.Companion.seconds
 
-
-// TODO: Get rid of the above code and use the below code instead
 
 /**
  * Initializes the Supabase client.
@@ -66,11 +66,28 @@ object SupabaseManager {
         }
     }
 
-    fun getSession(): String? {
+    fun getSession(): String {
         try {
             return goTrue?.currentSessionOrNull().toString()    // Returns null if no session
         } catch (e: Exception) {
             throw SessionRetrievalException("Failed to retrieve session", e)
+        }
+    }
+
+    suspend fun signOut(navController: NavController) {
+        try {
+            goTrue?.logout()
+            navController.navigate(NavigationRoute.Login.route)
+        } catch (e: Exception) {
+            throw SessionRetrievalException("Failed to sign out", e)
+        }
+    }
+
+    suspend fun refreshSession(): String {
+        try {
+            return goTrue?.refreshCurrentSession().toString()
+        } catch (e: Exception) {
+            throw SessionRetrievalException("Failed to refresh session", e)
         }
     }
     // TODO: Storing session token at UserRepository. Is it needed?
@@ -79,4 +96,3 @@ class InitializationException(message: String, cause: Throwable? = null) : Excep
 class SupabaseClientNotInitializedException(message: String) : IllegalStateException(message)
 class UserRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
 class SessionRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
-

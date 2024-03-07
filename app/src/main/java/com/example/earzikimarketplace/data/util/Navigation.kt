@@ -12,12 +12,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.getSession
 import com.example.earzikimarketplace.ui.view.pages.AddItem
 import com.example.earzikimarketplace.ui.view.pages.AddItemImagePicker
 import com.example.earzikimarketplace.ui.view.pages.AddItemStatusScreen
 import com.example.earzikimarketplace.ui.view.pages.ItemInfoPage
 import com.example.earzikimarketplace.ui.view.pages.MarketplaceScreen
 import com.example.earzikimarketplace.ui.view.pages.Home
+import com.example.earzikimarketplace.ui.view.pages.Profile
 import com.example.earzikimarketplace.ui.view.pages.login.LoginPage
 import com.example.earzikimarketplace.ui.view.pages.login.SignUpPage
 import com.example.earzikimarketplace.ui.view.pages.login.SplashScreen
@@ -99,7 +101,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             Home(navController)
         }
         composable(NavigationRoute.Profile.route) {
-            NavigationRoute.Profile(navController, context)
+            Profile(navController, context)
         }
 
         composable(
