@@ -14,8 +14,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.data.model.dataClass.Listing
+import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
+import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
+import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationDataForUser
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,20 +38,39 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
     fun setItem(listing: Listing) {
         _imagesData.value = null    // Clear the previous images
         _userResult.value = null    // Clear the previous result
+        _locationResult.value = null    // Clear the previous location
         _listing.value = listing
     }
 
     private val _userResult = MutableStateFlow<Result<UserSignUp>?>(null)
     val userResult: StateFlow<Result<UserSignUp>?> = _userResult
+
+    private val _locationResult = MutableStateFlow<Result<Location>?>(null)
+    val locationResult: StateFlow<Result<Location>?> = _locationResult
     fun fetchUser(userId: UUID) {
         viewModelScope.launch {
             _userResult.value = try {
-                // Success case, loadUser returns a User object
+                val user = loadUser(userId)
                 Log.d("SharedViewModel", "fetching user: $userId")
-                Result.success(loadUser(userId))
+                // If loading the user succeeds, attempt to load their location data next
+                val locationId = user.location_id ?: throw Exception("User has no location ID")
+                fetchLocationData(locationId)
+                Result.success(user)
             } catch (e: Exception) {
-                Log.e("SharedViewModel", "failed to fetch user: $userId")
-                // Error case, wrap the exception in Result
+                Log.e("SharedViewModel", "failed to fetch user: $userId, error: ${e.message}")
+                Result.failure(e)
+            }
+        }
+    }
+
+    private fun fetchLocationData(locationId: UUID) {
+        viewModelScope.launch {
+            _locationResult.value = try {
+                val location = getLocationData(locationId)
+                Log.d("SharedViewModel", "fetching location: $locationId")
+                Result.success(location)
+            } catch (e: Exception) {
+                Log.e("SharedViewModel", "failed to fetch location: $locationId, error: ${e.message}")
                 Result.failure(e)
             }
         }

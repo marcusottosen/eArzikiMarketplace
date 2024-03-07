@@ -78,6 +78,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController) {
     val userResult by sharedViewModel.userResult.collectAsState()
+    val locationResult by sharedViewModel.locationResult.collectAsState()
 
     val itemState = sharedViewModel.listing.observeAsState()
     itemState.value?.user_id?.let { userId ->
@@ -295,7 +296,7 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
 
 
                     Text( // Posted date
-                        text = "${R.string.posted} ${item.post_date?.let { formatDayMonth(it) }}/${
+                        text = "${stringResource(id = R.string.posted)} ${item.post_date?.let { formatDayMonth(it) }}/${
                             item.post_date?.let {
                                 formatYear(
                                     it
@@ -305,9 +306,11 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(top = 26.dp)
                     )
-                    Text(
-                        // location
-                        text = stringResource(R.string.location),
+                    Text( // location
+                        text = if (locationResult?.isSuccess == true)
+                            locationResult?.getOrNull()?.city.toString() + ", " + locationResult?.getOrNull()?.address.toString()
+                        else
+                            "",
                         style = MaterialTheme.typography.labelMedium,
                     )
 

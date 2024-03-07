@@ -2,6 +2,8 @@ package com.example.earzikimarketplace.data.model.supabaseAdapter
 
 import android.content.Context
 import android.util.Log
+import io.github.jan.supabase.postgrest.query.Columns
+import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.User
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -75,7 +77,7 @@ class UserRepository() {
                 email = user.email,
                 firstname = userData_.firstname,
                 surname = userData_.surname,
-                location_id = null,
+                location_id = userData_.location_id,
                 profile_picture = null,
                 phone_number = userData_.phone_number,
                 age = userData_.age,
@@ -130,7 +132,7 @@ fun storeUserData(context: Context, userData: UserSignUp) {
         putString("email", userData.email.toString())
         putString("firstname", userData.firstname)
         putString("surname", userData.surname)
-        putInt("location_id", userData.location_id ?: 0)
+        putString("location_id", userData.location_id?.toString())
         putInt("profile_picture", userData.profile_picture ?: 0)
         putInt("phone_number", userData.phone_number ?: 11111111)
         putInt("age", userData.age ?: 0)
@@ -165,6 +167,45 @@ fun getLocalUserData(context: Context): User {
         age = age
     )
 }
+
+suspend fun getLocationData(locationID: UUID): Location{
+    val client = SupabaseManager.getClient()
+    Log.d("UserRepository1111", "fetching data for location ID: ${locationID}")
+
+    val response = client.postgrest["locations"].select() {
+        eq("location_id", locationID)
+    }
+    Log.d("UserRepository", "getLocationData response: $response")
+
+    return response.decodeSingle<Location>()
+
+}
+
+suspend fun getLocationDataForUser(userId: UUID): Location {
+    val client = SupabaseManager.getClient()
+    // Step 1: Retrieve the user's location_id
+    val userResponse = client.postgrest["users"]
+        .select(columns = Columns.list("location_id")) {
+            eq("user_id", userId.toString())
+        }
+
+    Log.d("UserRepository33333", "getUserLocationId response: $userResponse")
+
+    val userLocationId = userResponse.decodeSingle<UserSignUp>().location_id
+        ?: throw IllegalArgumentException("User location ID not found")
+
+    Log.d("UserRepository44444", userLocationId.toString())
+
+    // Step 2: Retrieve the location data using the location_id
+    val locationResponse = client.postgrest["locations"]
+        .select {
+            eq("location_id", userLocationId.toString())
+        }
+    Log.d("UserRepository55555", "getLocationData response: $locationResponse")
+
+    return locationResponse.decodeSingle<Location>()
+}
+
 
 
 

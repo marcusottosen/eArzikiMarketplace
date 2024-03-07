@@ -28,7 +28,8 @@ data class UserSignUp(
     val email: String?,
     val firstname: String?,
     val surname: String?,
-    val location_id: Int? = 0,
+    @Serializable(with = UUIDSerializer::class)
+    val location_id: UUID?,
     val profile_picture: Int? = 0,
     val phone_number: Int?,
     val age: Int? = 18,
