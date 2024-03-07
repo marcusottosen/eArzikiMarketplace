@@ -12,7 +12,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.SortOption
 import com.example.earzikimarketplace.data.model.dataClass.TagItem

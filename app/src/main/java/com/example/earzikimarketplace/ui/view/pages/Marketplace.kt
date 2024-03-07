@@ -1,11 +1,13 @@
 package com.example.earzikimarketplace.ui.view.pages
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +25,10 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +37,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,13 +52,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.earzikimarketplace.R
+import com.example.earzikimarket.R
 import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.model.dataClass.UiState
+import com.example.earzikimarketplace.ui.view.reuseables.FilterDropdown
 import com.example.earzikimarketplace.ui.view.reuseables.ItemCard
 import com.example.earzikimarketplace.ui.view.reuseables.SearchBar
 import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
@@ -62,7 +70,7 @@ import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavController, categoryID: Int) {
+fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavController, pageCategoryID: Int) {
     val context = LocalContext.current
     val viewModel: MarketplaceViewModel = viewModel()
 
@@ -71,27 +79,43 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
     val uiState by viewModel.uiState.observeAsState(UiState.LOADING)
     val isPaginating by viewModel.isPaginating.observeAsState(false)
 
-    // Search and filter
+    val clickedTag = remember { mutableStateOf(-1) }
+
+    // Search
     var searchText by remember { mutableStateOf("") }
     val onSearchClicked = {
         Log.d("Marketplace", "Search button clicked: $searchText")
         viewModel.searchItems(searchText)
     }
-    val onFilterClicked = { Log.d("Marketplace", "Filter button clicked") }
-    val onClearClicked = {
+
+    // Handle the filter button
+    val showFilterMenu  = remember { mutableStateOf(false) }
+    val onFilterClicked = {
+        Log.d("Marketplace", "Filter button clicked")
+        showFilterMenu .value = !showFilterMenu .value // Toggle visibility
+    }
+
+    // Gets activated when the clear button is clicked
+    val onClearSearchClicked = {
         Log.d("Marketplace", "Clear button clicked")
-    searchText = ""
+        searchText = ""
+    }
+
+    val onTagClicked: (Int) -> Unit = { categoryID ->
+        Log.d("Marketplace", "Category button clicked: $categoryID")
+        clickedTag.value = categoryID
     }
 
     // Fetch items on first load
     LaunchedEffect(key1 = true) {  // (key1 = true) = block runs only once
         Log.d("MarketplaceScreen", "LaunchedEffect run, gathering listings")
-        viewModel.fetchNextPage(categoryID)
+        viewModel.fetchNextPage(pageCategoryID)
     }
     // Show toast when adding new item
     viewModel.listener = object : MarketplaceViewModel.MarketplaceListener {
         override fun onItemAddedSuccess() {
-            Toast.makeText(context, "Item added successfully!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(R.string.item_added_successfully), Toast.LENGTH_SHORT).show()
         }
         override fun onError(message: String) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -100,9 +124,9 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
 
     Scaffold(
         topBar = {
-            val categoryEnum = CategoryEnum.fromId(categoryID)
-            val categoryTitle = categoryEnum?.title ?: "Unknown Category"
-            MarketPageTop(navController, categoryTitle, viewModel, categoryID)
+            val categoryEnum = CategoryEnum.fromId(pageCategoryID)
+            val categoryTitle = categoryEnum?.getTitle(context) ?: stringResource(R.string.unknown_category)
+            MarketPageTop(navController, categoryTitle, viewModel, pageCategoryID, onTagClicked)
         }
     ) {
         Column(
@@ -112,25 +136,70 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
         ) {
             Spacer(modifier = Modifier.height(100.dp))
 
-            SearchBar(
-                searchText = searchText,
-                onSearchTextChanged = { newText -> searchText = newText },
-                onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside the lambda
-                onFilterClicked = { onFilterClicked() }, // Explicitly call the function inside the lambda
-                onClearClicked = { onClearClicked() } // Explicitly call the function inside the lambda
-            )
+            if (clickedTag.value == -1) {   // If no tag has been picked
+                SearchBar(
+                    searchText = searchText,
+                    onSearchTextChanged = { newText -> searchText = newText },
+                    onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside the lambda
+                    onFilterClicked = { onFilterClicked() },
+                    onClearClicked = { onClearSearchClicked() }
+                )
+            } else {
+                val tagEnum = TagEnum.fromId(clickedTag.value)
+                val tagTitle = tagEnum?.getTitle(context) ?: stringResource(R.string.unknown_tag)
+                val tagIcon = tagEnum?.icon ?: R.drawable.search
+                Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                    Image(
+                        painter = painterResource(id = tagIcon),
+                        contentDescription = "Custom Icon",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(end = 3.dp)
+                    )
+                    Text(text = tagTitle, style = MaterialTheme.typography.labelLarge)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(35.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(50)
+                            )
+                    ) {
+                        IconButton(
+                            onClick = { // Clear tag filter and show all items
+                                clickedTag.value = -1
+                                viewModel.onTagSelected(pageCategoryID, null)
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.background,
+
+                                )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+            }
+
             Spacer(modifier = Modifier.height(15.dp))
+            FilterDropdown(
+                expanded = showFilterMenu,
+                onSortSelected = viewModel::handleSortOptionSelected, // Pass the method reference directly
+            )
 
             when (uiState) {
-                UiState.LOADING -> Text("Loading...")
-                UiState.EMPTY -> Text("No items found.")
+                UiState.LOADING -> Text(stringResource(R.string.loading))
+                UiState.EMPTY -> Text(stringResource(R.string.no_items_found))
                 UiState.CONTENT -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // or adapt to your design needs
-                    //contentPadding = PaddingValues(all = 8.dp),
-                    ) {
+                    columns = GridCells.Fixed(2),
+                ) {
                     itemsIndexed(items) { index, item ->
                         if (index == items.lastIndex && !isPaginating) {
-                            viewModel.checkAndFetchNextPage(categoryID)
+                            viewModel.checkAndFetchNextPage(pageCategoryID)
                         }
                         ItemCard(
                             listing = item,
@@ -142,15 +211,15 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                     }
                     if (isPaginating) {
                         item {
-                            CircularProgressIndicator() // Or any other loading indicator
+                            CircularProgressIndicator()
                         }
                     }
                 }
 
-                null -> Text("Initializing...") // or another appropriate UI representation for this state
+                null -> Text(stringResource(R.string.initializing))
             }
             if (uiState == UiState.LOADING) {
-                CircularProgressIndicator() // Or any other initial loading indicator
+                CircularProgressIndicator()
             }
 
         }
@@ -159,7 +228,13 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
 
 
 @Composable
-fun MarketPageTop(navController: NavController, category: String, viewModel: MarketplaceViewModel, categoryID: Int) {
+fun MarketPageTop(
+    navController: NavController,
+    category: String,
+    viewModel: MarketplaceViewModel,
+    categoryID: Int,
+    onTagClicked: (Int) -> Unit
+) {
     val topHeight = 110
 
     Box(
@@ -172,7 +247,10 @@ fun MarketPageTop(navController: NavController, category: String, viewModel: Mar
                 .background(
                     brush = Brush.verticalGradient(
                         //colors = listOf(Color(0xFFFD5A0F), Color(0xFFFD7232))
-                        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surfaceTint)
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.surfaceTint
+                        )
                     )
                 )
         ) {
@@ -206,7 +284,7 @@ fun MarketPageTop(navController: NavController, category: String, viewModel: Mar
                 }
                 Spacer(modifier = Modifier.padding(top=0.dp))
 
-                VerticalScrollCategories(viewModel, categoryID)
+                VerticalScrollTags(viewModel, categoryID, onTagClicked)
 
             }
         }
@@ -223,10 +301,46 @@ fun MarketPageTop(navController: NavController, category: String, viewModel: Mar
 }
 
 @Composable
-fun VerticalScrollCategories(viewModel: MarketplaceViewModel, categoryID: Int){
-    //val tags1 = viewModel.generateTagItems()
-    val tags = TagEnum.getAllTags()
+fun SortOptionsPopup(
+    expanded: MutableState<Boolean>,
+    onSortSelected: (String) -> Unit, // Callback when a sort option is selected
+    context: Context
+) {
+    DropdownMenu(
+        expanded = expanded.value,
+        onDismissRequest = { expanded.value = false }
+    ) {
+        // Define your sort options here
+        val sortOptions = listOf(
+            "Nearest Items",
+            "Date - newest",
+            "Date - oldest",
+            "Price - cheapest",
+            "Price - most expensive"
+        )
 
+        sortOptions.forEach { option ->
+            DropdownMenuItem(
+                text = { Text(option) },
+                onClick = {
+                    onSortSelected(option) // Handle the selected sort option
+                    Toast.makeText(context, option, Toast.LENGTH_SHORT).show()
+                    expanded.value = false // Dismiss the dropdown menu
+                }
+            )
+        }
+    }
+}
+
+
+@Composable
+fun VerticalScrollTags(
+    viewModel: MarketplaceViewModel,
+    categoryID: Int,
+    onTagClicked: (Int) -> Unit
+){
+    val context = LocalContext.current
+    val tags = TagEnum.getAllTags()
 
     LazyRow(
         modifier = Modifier
@@ -238,6 +352,7 @@ fun VerticalScrollCategories(viewModel: MarketplaceViewModel, categoryID: Int){
                 Modifier
                     .padding(vertical = 5.dp)
                     .clickable {
+                        onTagClicked(tag.id)
                         viewModel.onTagSelected(categoryID, index + 1)
 
                     }
@@ -257,7 +372,7 @@ fun VerticalScrollCategories(viewModel: MarketplaceViewModel, categoryID: Int){
                         colorFilter = ColorFilter.tint(Color.White)
                     )
                     Text(
-                        text = tag.title,
+                        text = tag.getTitle(context),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )
