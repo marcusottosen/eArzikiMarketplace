@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.earzikimarket.R
-import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.model.supabaseAdapter.UserRepository
@@ -29,24 +28,24 @@ class LoginViewModel() : ViewModel() {
     val signUpState: StateFlow<SignUpState> = _signUpState
 
 
-    fun signUp(context: Context, email: String, password: String) {
+    fun signUp(context: Context, email: String, firstname: String, surname: String, number: Int, age: Int, password: String) {
         _signUpState.value = SignUpState.Loading
 
-        val apiKey = context.getString(R.string.API_TOKEN)
-        val apiUrl = context.getString(R.string.API_URL)
-        SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
+        //val apiKey = context.getString(R.string.API_TOKEN)
+        //val apiUrl = context.getString(R.string.API_URL)
+        //SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
 
         val repository = UserRepository()
 
         val userData = UserSignUp(  // TODO: Get correct data from user
             user_id = null,
             email = email,
-            firstname = "my firstname",
-            surname = "my surname",
+            firstname = firstname,
+            surname = surname,
             location_id = null,
             profile_picture = null,
-            phone_number = 12345678,
-            age = 18,
+            phone_number = number,
+            age = age,
             created_at = null
         )
 
@@ -83,29 +82,6 @@ class LoginViewModel() : ViewModel() {
         }
     }
 
-
-
-    /*fun signUp2(context: Context, email: String, password: String, navController: NavController) {
-        val apiKey = context.getString(R.string.API_TOKEN)
-        val apiUrl = context.getString(R.string.API_URL)
-        val gotrue = getGoTrue(apiKey, apiUrl)
-
-        viewModelScope.launch {
-            _signUpState.value = SignUpState.Loading
-
-            try {
-                val user = gotrue.signUpWith(Email) {
-                    this.email = email
-                    this.password = password
-                }
-                _signUpState.value = SignUpState.Success(email)
-
-            } catch (e: Exception) {
-                Log.e("SignUpViewModel", "Error signing up: ${e.message}")
-                _signUpState.value = SignUpState.Error("Error signing up: ${e.message}")
-            }
-        }
-    }*/
 
     fun resetLoginState() {
         _signUpState.value = SignUpState.Initial

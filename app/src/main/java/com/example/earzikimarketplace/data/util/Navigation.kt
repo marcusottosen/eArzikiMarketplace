@@ -1,8 +1,11 @@
 package com.example.earzikimarketplace.data.util
 
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,20 +20,46 @@ import com.example.earzikimarketplace.ui.view.pages.MarketplaceScreen
 import com.example.earzikimarketplace.ui.view.pages.Home
 import com.example.earzikimarketplace.ui.view.pages.login.LoginPage
 import com.example.earzikimarketplace.ui.view.pages.login.SignUpPage
+import com.example.earzikimarketplace.ui.view.pages.login.SplashScreen
+import com.example.earzikimarketplace.ui.viewmodel.AddItemViewModel
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(navController: NavHostController, sharedViewModel: SharedViewModel) {
-    val startingDestination = NavigationRoute.Login.route
-    // NOTE! If changing the starting destination, remember to add "SupabaseManager.initializeClient(apiKey, apiUrl)"
-// TODO: Retrieve current session, if none, then navigate to login page
-    val addItemViewModel: AddItemViewModel = viewModel()   // Created here for shared states
+fun Navigation(navController: NavHostController, sharedViewModel: SharedViewModel, context: Context) {
+    LaunchedEffect(key1 = "refreshSession") {  // Runs only once
+        try {
 
+
+            val session = getSession()
+            Log.d("Navigation", "Session: $session")
+
+            // Navigate based on session validity
+            val destination = if (session.isEmpty() || session == "null") {
+                Log.d("Navigation", "Session is invalid")
+                NavigationRoute.Login.route
+            } else {
+                Log.d("Navigation", "Session is valid")
+                NavigationRoute.Home.route
+            }
+
+            // Perform navigation to either home or login
+            navController.navigate(destination) {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Navigation", "Error refreshing session: $e")
+            NavigationRoute.Login.route
+        }
+    }
+
+    val addItemViewModel: AddItemViewModel = viewModel()   // Created here for shared states
 
     NavHost(
         navController,
-        startDestination = startingDestination//NavigationRoute.NewHome.route //startingDestination
+        startDestination = NavigationRoute.SplashScreen.route
     ) {
         composable(NavigationRoute.SignUp.route) {
             SignUpPage(navController)
@@ -39,11 +68,15 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             LoginPage(navController = navController)
         }
 
+        composable(NavigationRoute.SplashScreen.route) {
+            SplashScreen()
+        }
 
-       // composable(NavigationRoute.Marketplace.route) {
-       //     //BackHandler(true) {}
-       //     MarketplaceScreen(sharedViewModel, navController)
-       // }
+
+        // composable(NavigationRoute.Marketplace.route) {
+        //     //BackHandler(true) {}
+        //     MarketplaceScreen(sharedViewModel, navController)
+        // }
 
         composable(NavigationRoute.AddItem.route) {
             AddItem(navController, addItemViewModel)
@@ -52,15 +85,21 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             AddItemImagePicker(navController, addItemViewModel)
         }
         composable(NavigationRoute.AddItemStatusScreen.route) {
-            AddItemStatusScreen(navController, addItemViewModel)
+            NavigationRoute.AddItemStatusScreen(navController, addItemViewModel)
+            //addItemViewModel.resetAfterUpload()
+
         }
+
 
         composable(NavigationRoute.ItemDetails.route) {
             ItemInfoPage(sharedViewModel, navController)
         }
 
-        composable(NavigationRoute.NewHome.route) {
+        composable(NavigationRoute.Home.route) {
             Home(navController)
+        }
+        composable(NavigationRoute.Profile.route) {
+            NavigationRoute.Profile(navController, context)
         }
 
         composable(
@@ -69,7 +108,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
         ) { backStackEntry ->
             val categoryID = backStackEntry.arguments?.getInt("categoryID")
             if (categoryID != null) {
-                MarketplaceScreen(sharedViewModel = sharedViewModel, navController = navController, categoryID = categoryID)
+                MarketplaceScreen(sharedViewModel = sharedViewModel, navController = navController, pageCategoryID = categoryID)
             }
         }
 
@@ -92,6 +131,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
 
     }
 }
+
 
 /*itemModel?.let {
     Log.e("Navigation", "Should load ItemInfoPage 3")

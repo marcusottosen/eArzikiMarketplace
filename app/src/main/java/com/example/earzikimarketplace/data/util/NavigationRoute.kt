@@ -8,8 +8,10 @@ sealed class NavigationRoute(var route: String) {
     object ItemDetails              : NavigationRoute("itemDetails")
     object SignUp                   : NavigationRoute("signUp")
     object Login                    : NavigationRoute("login")
-    object NewHome                    : NavigationRoute("newHome")
-    object AddItemStatusScreen                    : NavigationRoute("addItemStatusScreen")
-    object AddItemImagePicker                    : NavigationRoute("addItemImagePicker")
+    object Home                     : NavigationRoute("Home")
+    object AddItemStatusScreen      : NavigationRoute("addItemStatusScreen")
+    object AddItemImagePicker       : NavigationRoute("addItemImagePicker")
+    object SplashScreen             : NavigationRoute("splashScreen")
+    object Profile                  : NavigationRoute("profile")
 
 }

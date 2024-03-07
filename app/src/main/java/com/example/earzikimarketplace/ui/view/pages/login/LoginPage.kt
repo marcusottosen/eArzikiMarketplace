@@ -97,7 +97,7 @@ fun LoginPage(navController: NavController) {
         is LoginViewModel.LoginState.Success -> {
             val email = (loginState as LoginViewModel.LoginState.Success).email
             Text("Sign-in successful! Email: $email")
-            navController.navigate(NavigationRoute.NewHome.route)
+            navController.navigate(NavigationRoute.Home.route)
             viewModel.resetLoginState()
         }
         is LoginViewModel.LoginState.Error -> {

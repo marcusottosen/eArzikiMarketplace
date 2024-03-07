@@ -23,7 +23,6 @@ import androidx.navigation.NavController
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.viewmodel.LoginViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpPage(navController: NavController) {
@@ -142,7 +141,7 @@ fun SignUpPage(navController: NavController) {
 
                 // Only proceed if there are no errors
                 if (errorMessage.isEmpty()) {
-                    viewModel.signUp(context, email, password)
+                    viewModel.signUp(context, email, firstName, surname, phoneNumber.toInt(), age.toInt(), password)
                 }
             }
         ) {
@@ -174,7 +173,7 @@ fun SignUpPage(navController: NavController) {
             is LoginViewModel.SignUpState.Success -> {
                 val email = (signUpState as LoginViewModel.SignUpState.Success).email
                 Text("Sign-up successful! Email: $email")
-                navController.navigate(NavigationRoute.NewHome.route)
+                navController.navigate(NavigationRoute.Home.route)
                 viewModel.resetLoginState()
             }
             is LoginViewModel.SignUpState.Error -> {
@@ -197,21 +196,3 @@ fun SignUpPage(navController: NavController) {
         }
     }
 }
-/*
-@Composable
-fun signUpUser(email: String, password: String, context: Context) {
-    val apiKey = context.getString(R.string.API_TOKEN)
-    val apiUrl = context.getString(R.string.API_URL)
-    val gotrue = getGoTrue(apiKey, apiUrl)
-
-    LaunchedEffect(Unit) {
-        try {
-            val user = gotrue.signUpWith(Email) {
-                this.email = email
-                this.password = password
-            }
-        } catch (e: Exception) {
-        }
-    }
-}
-*/
