@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
+import com.example.earzikimarketplace.data.model.dataClass.SortOption
 import com.example.earzikimarketplace.data.model.dataClass.TagItem
 import com.example.earzikimarketplace.data.model.dataClass.UiState
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
+
 
 
 class MarketplaceViewModel() : ViewModel() {
@@ -58,11 +60,11 @@ class MarketplaceViewModel() : ViewModel() {
     }
     val uiState: LiveData<UiState> = _uiState
 
-    fun checkAndFetchNextPage(categoryId: Int) {
+    fun checkAndFetchNextPage(pageCategoryId: Int) {
         if ((items.value?.size
                 ?: 0) >= _currentPage.value!! * pageSize && !_isLoading.value!! && !_allItemsLoaded.value!!
         ) {
-            fetchNextPage(categoryId)
+            fetchNextPage(pageCategoryId)
         }
     }
 
@@ -77,7 +79,7 @@ class MarketplaceViewModel() : ViewModel() {
     }
 
     // Call this method when the tag changes
-    fun onTagSelected(categoryId: Int, tag: Int) {
+    fun onTagSelected(categoryId: Int, tag: Int?) {
         clearItems()
         fetchNextPage(categoryId, tag)
     }
@@ -162,57 +164,86 @@ class MarketplaceViewModel() : ViewModel() {
         }
     }
 
-
-
-
-/*
-    private val _addItemStatus = MutableStateFlow<AddItemStatus>(AddItemStatus.Idle)
-    val addItemStatus: StateFlow<AddItemStatus> = _addItemStatus
-    fun resetAddItemStatus() {
-        _addItemStatus.value = AddItemStatus.Idle
+    fun handleSortOptionSelected(optionId: Int) {
+        val option = SortOption.values().find { it.id == optionId }
+        when (option) {
+            SortOption.NearestItems -> sortItemsByNearest()
+            SortOption.DateNewest -> sortItemsByDate(isNewestFirst = true)
+            SortOption.DateOldest -> sortItemsByDate(isNewestFirst = false)
+            SortOption.PriceCheapest -> sortItemsByPrice(isCheapestFirst = true)
+            SortOption.PriceMostExpensive -> sortItemsByPrice(isCheapestFirst = false)
+            null -> Log.d("MarketplaceViewModel", "Unknown sort option")
+        }
     }
 
-    fun updateStatus(newStatus: AddItemStatus) {
-        _addItemStatus.value = newStatus
-    }*/
+    // TODO: Add functionality to the filters: ClearItems() and fetch new.
 
-   /* fun addItem(context: Context, listing: Listing) {
-        viewModelScope.launch {
-            _addItemStatus.value = AddItemStatus.Loading
-            try {
-                Log.d("MarketplaceViewModel", "Adding item: $listing")
-                //val userInfo = getUserInfo(apiKey, apiUrl) // retrieves user info from the database
-                val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info from the database
+    private fun sortItemsByNearest() {
+        Log.d("marketviewmodel", "sort by nearest item")
+        // Implementation of sorting items by nearest
+    }
 
-                val updatedListing = Listing(
-                    user_id = UUID.fromString(userInfo.id),
-                    title = listing.title,
-                    description = listing.description,
-                    price = listing.price,
-                    category_id = listing.category_id,
-                    image_urls = listing.image_urls
-                )
+    private fun sortItemsByDate(isNewestFirst: Boolean) {
+        Log.d("marketviewmodel", "sort item by date. Newest: $isNewestFirst")
 
-                listingsDB.addItem(updatedListing)   // Adds item to database
-                val updatedItems = (_items.value.orEmpty() + updatedListing).toMutableList()
-                _items.value = updatedItems
+        // Implementation of sorting items by date
+    }
 
-                _addItemStatus.value = AddItemStatus.Success // Set to success after adding
+    private fun sortItemsByPrice(isCheapestFirst: Boolean) {
+        // Implementation of sorting items by price
+    }
 
 
-                _addItemStatus.value = AddItemStatus.Success    //allows for navigation
-                listener?.onItemAddedSuccess()  // Notify success by toast
 
-            } catch (e: Exception) {
-                Log.e("MarketplaceViewModel", "Error adding item: ${e.message}")
-                _addItemStatus.value = AddItemStatus.Error(e.message ?: "Unknown error")
 
-                _addItemStatus.value = e.message?.let { AddItemStatus.Error(it) }!!
-
-                listener?.onError("Error adding item: ${e.message}")  // Notify the listener about the error
-            }
+    /*
+        private val _addItemStatus = MutableStateFlow<AddItemStatus>(AddItemStatus.Idle)
+        val addItemStatus: StateFlow<AddItemStatus> = _addItemStatus
+        fun resetAddItemStatus() {
+            _addItemStatus.value = AddItemStatus.Idle
         }
-    }*/
+
+        fun updateStatus(newStatus: AddItemStatus) {
+            _addItemStatus.value = newStatus
+        }*/
+
+    /* fun addItem(context: Context, listing: Listing) {
+         viewModelScope.launch {
+             _addItemStatus.value = AddItemStatus.Loading
+             try {
+                 Log.d("MarketplaceViewModel", "Adding item: $listing")
+                 //val userInfo = getUserInfo(apiKey, apiUrl) // retrieves user info from the database
+                 val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info from the database
+
+                 val updatedListing = Listing(
+                     user_id = UUID.fromString(userInfo.id),
+                     title = listing.title,
+                     description = listing.description,
+                     price = listing.price,
+                     category_id = listing.category_id,
+                     image_urls = listing.image_urls
+                 )
+
+                 listingsDB.addItem(updatedListing)   // Adds item to database
+                 val updatedItems = (_items.value.orEmpty() + updatedListing).toMutableList()
+                 _items.value = updatedItems
+
+                 _addItemStatus.value = AddItemStatus.Success // Set to success after adding
+
+
+                 _addItemStatus.value = AddItemStatus.Success    //allows for navigation
+                 listener?.onItemAddedSuccess()  // Notify success by toast
+
+             } catch (e: Exception) {
+                 Log.e("MarketplaceViewModel", "Error adding item: ${e.message}")
+                 _addItemStatus.value = AddItemStatus.Error(e.message ?: "Unknown error")
+
+                 _addItemStatus.value = e.message?.let { AddItemStatus.Error(it) }!!
+
+                 listener?.onError("Error adding item: ${e.message}")  // Notify the listener about the error
+             }
+         }
+     }*/
 }
 // TODO: two listeners for the same thing? (_addItemStatus.value and listener?.onItemAddedSuccess())
 
