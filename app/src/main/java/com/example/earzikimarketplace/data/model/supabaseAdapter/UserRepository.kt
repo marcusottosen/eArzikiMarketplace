@@ -181,31 +181,6 @@ suspend fun getLocationData(locationID: UUID): Location{
 
 }
 
-suspend fun getLocationDataForUser(userId: UUID): Location {
-    val client = SupabaseManager.getClient()
-    // Step 1: Retrieve the user's location_id
-    val userResponse = client.postgrest["users"]
-        .select(columns = Columns.list("location_id")) {
-            eq("user_id", userId.toString())
-        }
-
-    Log.d("UserRepository33333", "getUserLocationId response: $userResponse")
-
-    val userLocationId = userResponse.decodeSingle<UserSignUp>().location_id
-        ?: throw IllegalArgumentException("User location ID not found")
-
-    Log.d("UserRepository44444", userLocationId.toString())
-
-    // Step 2: Retrieve the location data using the location_id
-    val locationResponse = client.postgrest["locations"]
-        .select {
-            eq("location_id", userLocationId.toString())
-        }
-    Log.d("UserRepository55555", "getLocationData response: $locationResponse")
-
-    return locationResponse.decodeSingle<Location>()
-}
-
 
 
 

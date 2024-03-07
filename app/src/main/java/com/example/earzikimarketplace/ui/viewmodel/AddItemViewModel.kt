@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 class AddItemViewModel() : ViewModel() {
     private val _items = MutableLiveData<List<Listing>>() //actual list of all items
@@ -81,13 +82,13 @@ class AddItemViewModel() : ViewModel() {
             val imageUris = _selectedImageUris.value ?: return@launch
 
             try {
-                val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info from the database
+                val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info
                 val imageUrls = imageUris.map { uri ->
                     val imageByteArray = convertUriToByteArray(context, uri)
                     listingsDB.uploadImageToSupabase(imageByteArray, userInfo.id)
                 }
 
-                val updatedListing = temporaryListing?.copy(image_urls = imageUrls)
+                val updatedListing = temporaryListing?.copy(image_urls = imageUrls, user_id = UUID.fromString(userInfo.id))
                 Log.d("MarketplaceViewModel", "Adding item: $updatedListing")
                 updatedListing?.let { listingsDB.addItem(it) }
 
@@ -106,13 +107,25 @@ class AddItemViewModel() : ViewModel() {
     // Function to convert Uri to ByteArray
     // Bitmap compresses file size significantly (ex. 1.35MB -> 300KB)
     private fun convertUriToByteArray(context: Context, uri: Uri): ByteArray {
-        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+        val originalBitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
 
-        // Compress the bitmap
+        // Resize the image for upload
+        val resizedBitmap = resizeImageForUpload(originalBitmap, 720) // for 720p height
+
         val outputStream = ByteArrayOutputStream()
-        // You can adjust the quality parameter (0-100) as needed
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream)
+
+        // Clean up
+        originalBitmap.recycle()
+        resizedBitmap.recycle()
 
         return outputStream.toByteArray()
+    }
+
+    // Resize to make image file size even smaller
+    private fun resizeImageForUpload(bitmap: Bitmap, targetHeight: Int): Bitmap {
+        val aspectRatio = bitmap.width.toDouble() / bitmap.height.toDouble()
+        val targetWidth = (targetHeight * aspectRatio).toInt()
+        return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
     }
 }
