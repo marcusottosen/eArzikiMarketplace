@@ -20,7 +20,7 @@ sealed class NavigationRoute(var route: String) {
 
 sealed class NavigationItem(var route: String, var icon: Int, var title: String) {
     object Home : NavigationItem("Home", R.drawable.home, "Home")
-    object Sell : NavigationItem("Sell", R.drawable.home, "Sell")
-    object Offers : NavigationItem("Offers", R.drawable.home, "Offers")
-    object Profile : NavigationItem("Profile", R.drawable.home, "Profile")
+    object AddItem : NavigationItem("addItem", R.drawable.add_circle, "Sell")
+    object Offers : NavigationItem("offers", R.drawable.storefront, "Offers")
+    object Profile : NavigationItem("profile", R.drawable.person, "Profile")
 }

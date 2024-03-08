@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.util.Navigation
+import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.data.util.getCurrentLocale
 import com.example.earzikimarketplace.ui.theme.EArzikiMarketplaceTheme
 import com.example.earzikimarketplace.ui.view.reuseables.BottomNavigationBar
@@ -69,15 +70,16 @@ class MainActivity : ComponentActivity() {
                     val currentRoute = navBackStackEntry?.destination?.route
                     Scaffold(
                         bottomBar = {
-                            if (currentRoute != "login" && currentRoute != "splash") {
+                            if (currentRoute != NavigationRoute.Login.route &&
+                                currentRoute != NavigationRoute.SignUp.route &&
+                                currentRoute != NavigationRoute.SplashScreen.route
+                                ) {
                                 BottomNavigationBar(navController = navController)
                             }
                         }
                     ) {
                         Navigation(navController = navController, sharedViewModel = sharedViewModel, context = context)
                     }
-
-                    //Navigation(navController = navController, sharedViewModel = sharedViewModel, context = context)
                 }
             }
         }

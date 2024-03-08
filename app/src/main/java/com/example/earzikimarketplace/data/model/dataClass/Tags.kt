@@ -20,7 +20,7 @@ enum class TagEnum(val id: Int, @StringRes val titleId: Int, val icon: Int) {
     KITCHEN(7,              R.string.tag_kitchen, R.drawable.kitchen),
     CLOTHES(8,              R.string.tag_clothes, R.drawable.clothes),
     TECHNOLOGY(9,           R.string.tag_technology, R.drawable.calculator),
-    HOMEAPPLIANCES(10,      R.string.tag_home_appliances, R.drawable.home),
+    HOMEAPPLIANCES(10,      R.string.tag_home_appliances, R.drawable.bulb),
     BUILDINGMATERIALS(11,   R.string.tag_building_materials, R.drawable.hammer),
     TEXTILES(12,            R.string.tag_textiles, R.drawable.textile),
     TOYS(13,                R.string.tag_toys, R.drawable.toys),
