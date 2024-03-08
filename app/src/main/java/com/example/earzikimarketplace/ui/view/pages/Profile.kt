@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.signOut
-import com.example.earzikimarketplace.getCurrentLocale
-import com.example.earzikimarketplace.setLocale
+import com.example.earzikimarketplace.data.util.getCurrentLocale
+import com.example.earzikimarketplace.data.util.setLocale
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import java.util.Locale
 

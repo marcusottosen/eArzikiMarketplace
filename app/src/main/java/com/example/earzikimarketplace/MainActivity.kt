@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.util.Navigation
+import com.example.earzikimarketplace.data.util.getCurrentLocale
 import com.example.earzikimarketplace.ui.theme.EArzikiMarketplaceTheme
 import com.example.earzikimarketplace.ui.view.reuseables.BottomNavigationBar
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
@@ -82,32 +83,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-// TODO: Add loader that checks if user has signed in when opening the app
-// Currently crashes when closing app and starts it up again.
-fun setLocale(context: Context, languageCode: String) {
-    val locale = Locale(languageCode)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        context.getSystemService(LocaleManager::class.java)
-            .applicationLocales = LocaleList.forLanguageTags(languageCode)
-    } else {
-        AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(languageCode)
-        )
-    }
 
-    Locale.setDefault(locale)
-    val config = context.resources.configuration
-    config.setLocale(locale)
-    context.createConfigurationContext(config)
-}
 
-fun getCurrentLocale(context: Context): String {
-    val currentAppLocales = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        context.getSystemService(LocaleManager::class.java)
-            .applicationLocales
-    } else {
-        AppCompatDelegate.getApplicationLocales()
-    }
-    Log.d(ContentValues.TAG, "Current App Locales: $currentAppLocales")
-    return currentAppLocales.toString()
-}
