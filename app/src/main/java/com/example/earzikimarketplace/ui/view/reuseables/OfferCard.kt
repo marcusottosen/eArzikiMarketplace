@@ -2,126 +2,92 @@ package com.example.earzikimarketplace.ui.view.reuseables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
-import com.example.earzikimarketplace.data.model.dataClass.DBCategory
 
 @Composable
-fun OfferCard(category: DBCategory) {
+fun OfferCard(navController: NavController) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp, 0.dp),
-        //.height(240.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
+            .padding(15.dp)
+            .height(250.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
-            Image(
-                painter = painterResource(id = category.imageRes),
-                contentDescription = category.categoryName,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-            )
-            Column(
-                //verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .height(60.dp)
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 0.dp)
-            ) {
-                Text(
-                    text = category.categoryName,
-                    style = MaterialTheme.typography.titleSmall,
-                    overflow = TextOverflow.Visible,
-                    maxLines = 2, // Allow up to two lines
-                    lineHeight = 18.sp,
-                    modifier = Modifier.weight(1f)
+        Column(modifier = Modifier
+            .padding(0.dp)
+            .background((colorResource(id = R.color.white)))
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                Image(
+                    painter = painterResource(id = R.drawable.local_offers_image),
+                    contentDescription = "Shop Image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = if (category.itemCount.isSuccess) {
-                        val count = category.itemCount.getOrNull() ?: 0
-                        stringResource(R.string.items, count)
-                    } else {
-                        stringResource(R.string.loading)
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+                //Spacer(Modifier.width(16.dp)) // Space between the image and the text
+                Column (modifier = Modifier.weight(1f).padding(horizontal = 8.dp)){
+                    Text(
+                         "Sale at Niamey Soil Shop! \n \n" +
+                                "Dig into discounts on earthy delights.\n " +
+                                "Enjoy a 5% discount exclusive for eArziki members.\n \n " +
+                                "Find millet, sorghum, and cowpea seeds – nourish your soil.",
+                        style = MaterialTheme.typography.bodySmall
 
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-@Composable
-fun PlaceholderOfferCard() {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp, 0.dp),
-        //.height(240.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-    ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
-            Box(
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-                    .background(Color.Gray)
-            )
             Column(
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .height(60.dp)
+                    .fillMaxWidth()
                     .padding(horizontal = 8.dp)
-                    .padding(top = 8.dp)
-            ) {
-                Text(
-                    text = "",
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    stringResource(R.string.loading),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+                    .weight(0.5f),
 
+            ) {
+
+                Text("Niamey Soil Shop", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(vertical = 4.dp))
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        "11770 Boulevard Mali Bero,\nNiamey, Niger",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        "Expires: 27 days",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

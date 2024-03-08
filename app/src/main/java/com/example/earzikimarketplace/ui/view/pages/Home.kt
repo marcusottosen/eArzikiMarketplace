@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.DBCategory
 import com.example.earzikimarketplace.ui.view.reuseables.CategoryCard
-import com.example.earzikimarketplace.ui.view.reuseables.OfferCard
+import com.example.earzikimarketplace.ui.view.reuseables.OfferMenuCard
 import com.example.earzikimarketplace.ui.viewmodel.HomeViewModel
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.PlaceholderCategoryCard
@@ -60,7 +60,7 @@ fun Home(navController: NavController) {
         }
         item {
             if (!isLoading && categories.size > 4) {
-                OfferCard(categories[4])
+                OfferMenuCard(categories[4], navController)
                 Spacer(modifier = Modifier.height(20.dp))
             } else
                 PlaceholderOfferCard()

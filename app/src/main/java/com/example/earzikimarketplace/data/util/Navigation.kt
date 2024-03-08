@@ -18,6 +18,7 @@ import com.example.earzikimarketplace.ui.view.pages.addItem.AddItemStatusScreen
 import com.example.earzikimarketplace.ui.view.pages.ItemInfoPage
 import com.example.earzikimarketplace.ui.view.pages.MarketplaceScreen
 import com.example.earzikimarketplace.ui.view.pages.Home
+import com.example.earzikimarketplace.ui.view.pages.Offers
 import com.example.earzikimarketplace.ui.view.pages.Profile
 import com.example.earzikimarketplace.ui.view.pages.login.LoginPage
 import com.example.earzikimarketplace.ui.view.pages.login.SignUpPage
@@ -100,6 +101,10 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
         }
         composable(NavigationRoute.Profile.route) {
             Profile(navController, sharedViewModel, context)
+        }
+
+        composable(NavigationRoute.Offers.route) {
+            Offers(navController)
         }
 
         composable(

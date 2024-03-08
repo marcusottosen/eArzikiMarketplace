@@ -60,7 +60,7 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 17.sp,
+        fontSize = 16.sp,
         lineHeight = 24.sp
     ),
     bodySmall = TextStyle(

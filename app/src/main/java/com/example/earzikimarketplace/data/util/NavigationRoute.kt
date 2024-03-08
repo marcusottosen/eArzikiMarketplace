@@ -15,6 +15,7 @@ sealed class NavigationRoute(var route: String) {
     object AddItemImagePicker       : NavigationRoute("addItemImagePicker")
     object SplashScreen             : NavigationRoute("splashScreen")
     object Profile                  : NavigationRoute("profile")
+    object Offers                  : NavigationRoute("offers")
 
 }
 
