@@ -18,7 +18,6 @@ import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
-import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationDataForUser
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,6 +39,13 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
         _userResult.value = null    // Clear the previous result
         _locationResult.value = null    // Clear the previous location
         _listing.value = listing
+    }
+
+    // Toggles for image loading. If disabled images are not loaded on marketplace page.
+    private val _imageLoadingEnabled = MutableLiveData(true)
+    val imageLoadingEnabled: LiveData<Boolean> = _imageLoadingEnabled
+    fun toggleImageLoading() {
+        _imageLoadingEnabled.value = !(_imageLoadingEnabled.value ?: true)
     }
 
     private val _userResult = MutableStateFlow<Result<UserSignUp>?>(null)
@@ -102,7 +108,7 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
         }
     }
 
-    fun fetchItemImages(urls: List<String>) { // Used on product page
+    fun fetchItemImages(urls: List<String>) { // Used on product page. Gets all images for item
         viewModelScope.launch {
             _imagesData.value = urls.mapNotNull { url ->
                 try {
@@ -116,7 +122,7 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
             }
         }
     }
-    suspend fun fetchImageBitmap(url: String): ImageBitmap? {
+    suspend fun fetchImageBitmap(url: String): ImageBitmap? {   // Used on ItemCard. Gets first image for item
         return try {
             val bytes = listingsDB.getItemImage(url)
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()

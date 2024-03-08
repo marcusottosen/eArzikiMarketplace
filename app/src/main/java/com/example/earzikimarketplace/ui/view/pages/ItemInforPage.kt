@@ -87,7 +87,6 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
         }
     }
 
-    // Fetch the image when the item is set or changed
     val imagesData by sharedViewModel.imagesData.collectAsState()
     itemState.value?.let { item ->
         LaunchedEffect(item.image_urls) {

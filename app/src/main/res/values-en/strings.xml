@@ -55,6 +55,11 @@
     <string name="tag_toys">Toys</string>
     <string name="tag_tools">Tools</string>
     <string name="tag_vehicles">Vehicles</string>
+    <string name="log_out">Log Out</string>
+    <string name="load_images_for_items_in_the_marketplace">Load images for items in the marketplace?</string>
+    <string name="back">Back</string>
+    <string name="user_profile">User Profile</string>
+    <string name="current_language">Current Language: %1$s</string>
 
 </resources>
 

@@ -56,5 +56,9 @@
     <string name="tag_toys">Wasan Yara</string>
     <string name="tag_tools">Kayayyakin aiki</string>
     <string name="tag_vehicles">Ababen hawa</string>
-
+    <string name="log_out">Fita</string>
+    <string name="load_images_for_items_in_the_marketplace">Shin a loda hotunan abubuwan da ke kasuwa?</string>
+    <string name="back">Baya</string>
+    <string name="user_profile">Bayanin Mai amfani</string>
+    <string name="current_language">Harshe na Yanzu: %1$s</string>
 </resources>

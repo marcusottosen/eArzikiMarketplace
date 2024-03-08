@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,15 +52,19 @@ fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: 
 
     // Local state for storing the image bitmap
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    // Observe image loading toggle
+    val isImageLoadingEnabled by sharedViewModel.imageLoadingEnabled.observeAsState(true)
 
-    // Trigger image loading when the item changes
+
+    // Trigger image loading based on the firstImageUrl and the image loading preference
     val firstImageUrl = listing.image_urls?.getOrNull(0)
-    LaunchedEffect(firstImageUrl) {
-        firstImageUrl?.let { url ->
-            //Log.d("ItemCard", "Loading image from $url")
+    LaunchedEffect(firstImageUrl, isImageLoadingEnabled) {
+        if (isImageLoadingEnabled && firstImageUrl != null) {
             coroutineScope.launch {
-                imageBitmap = sharedViewModel.fetchImageBitmap(url)
+                imageBitmap = sharedViewModel.fetchImageBitmap(firstImageUrl)
             }
+        } else {
+            imageBitmap = null // Reset or set a default placeholder image if necessary
         }
     }
 

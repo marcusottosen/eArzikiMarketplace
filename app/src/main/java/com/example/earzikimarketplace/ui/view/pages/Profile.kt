@@ -10,39 +10,50 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.signOut
 import com.example.earzikimarketplace.getCurrentLocale
 import com.example.earzikimarketplace.setLocale
+import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import java.util.Locale
 
 @Composable
-fun Profile(navController: NavController, context: Context) {
+fun Profile(navController: NavController, sharedViewModel: SharedViewModel, context: Context) {
     var signOutTrigger by remember { mutableStateOf(false) }
+
+    // Observe image loading preference
+    val isImageLoadingEnabled by sharedViewModel.imageLoadingEnabled.observeAsState(initial = true)
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "User Profile", fontSize = 24.sp)
+            Text(text = stringResource(R.string.user_profile), style = MaterialTheme.typography.headlineMedium)
+
 
             Button(onClick = { navController.popBackStack() }) {
-                Text(text = "Back")
+                Text(text = stringResource(R.string.back))
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(100.dp))
 
             val supportedLanguages = listOf("en", "fr", "ha") // Add other languages as needed
             val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language from your existing method
@@ -56,13 +67,27 @@ fun Profile(navController: NavController, context: Context) {
                 }
             )
 
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.load_images_for_items_in_the_marketplace),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            // UI elements...
+            Switch(
+                checked = isImageLoadingEnabled,
+                onCheckedChange = {
+                    sharedViewModel.toggleImageLoading()
+                }
+            )
+
             Spacer(modifier = Modifier.height(200.dp))
 
             Button(onClick = {
                 // Trigger the sign out process
                 signOutTrigger = true
             }) {
-                Text(text = "Log Out")
+                Text(text = stringResource(R.string.log_out))
             }
         }
     }
@@ -85,7 +110,8 @@ fun LanguageSelector(
 ) {
     // Display current language
     Text(
-        text = "Current Language: $currentLanguage",
+        text = stringResource(R.string.current_language, currentLanguage),
+        style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(8.dp)
     )
 

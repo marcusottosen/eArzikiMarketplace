@@ -100,7 +100,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             Home(navController)
         }
         composable(NavigationRoute.Profile.route) {
-            Profile(navController, context)
+            Profile(navController, sharedViewModel, context)
         }
 
         composable(

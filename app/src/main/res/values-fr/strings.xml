@@ -56,5 +56,10 @@
     <string name="tag_toys">Jouets</string>
     <string name="tag_tools">Outils</string>
     <string name="tag_vehicles">Véhicules</string>
+    <string name="log_out">Déconnexion</string>
+    <string name="load_images_for_items_in_the_marketplace">Charger les images pour les articles sur le marché ?</string>
+    <string name="back">Retour</string>
+    <string name="user_profile">Profil de l\'utilisateur</string>
+    <string name="current_language">Langue actuelle : %1$s</string>
 
 </resources>
