@@ -79,7 +79,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
                 }
             )
 
-            Spacer(modifier = Modifier.height(200.dp))
+            Spacer(modifier = Modifier.height(100.dp))
 
             Button(onClick = {
                 // Trigger the sign out process

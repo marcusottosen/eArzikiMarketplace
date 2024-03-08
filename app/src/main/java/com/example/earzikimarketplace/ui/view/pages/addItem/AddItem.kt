@@ -1,4 +1,4 @@
-package com.example.earzikimarketplace.ui.view.pages
+package com.example.earzikimarketplace.ui.view.pages.addItem
 
 import android.annotation.SuppressLint
 import android.widget.Toast

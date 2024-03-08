@@ -1,4 +1,4 @@
-package com.example.earzikimarketplace.ui.view.pages
+package com.example.earzikimarketplace.ui.view.pages.addItem
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

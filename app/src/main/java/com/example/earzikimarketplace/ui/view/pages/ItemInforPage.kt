@@ -327,6 +327,8 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                 // This will now always be visible, showing either the user data or "loading..."
                 UserContactInfo(user = userResult?.getOrNull(), sharedViewModel, item.title)
             }
+            Spacer(modifier = Modifier.height(100.dp))
+
 
         }
     }
