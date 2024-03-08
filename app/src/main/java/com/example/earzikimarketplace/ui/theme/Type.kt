@@ -5,82 +5,82 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.earzikimarketplace.ui.theme.PoppinsFontFamily
 
 val Typography = Typography(
     displayLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 48.sp  
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 50.sp
     ),
     displayMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 36.sp  
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 38.sp
     ),
     displaySmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp  
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 26.sp
     ),
     headlineLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 30.sp  
+        fontSize = 32.sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp  
+        fontSize = 26.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 18.sp  
+        fontSize = 20.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp  
+        fontSize = 26.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp  
+        fontSize = 22.sp
     ),
     titleSmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp  
+        fontSize = 18.sp
     ),
     bodyLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp  
+        fontSize = 20.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 15.sp
+        fontSize = 17.sp,
+        lineHeight = 24.sp
     ),
     bodySmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
+        fontFamily = JosefinFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 11.sp
+        fontSize = 13.sp
     ),
     labelLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp  
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp
     ),
     labelMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 12.sp  
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 10.sp  
-    )
+        fontFamily = JosefinFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
 )

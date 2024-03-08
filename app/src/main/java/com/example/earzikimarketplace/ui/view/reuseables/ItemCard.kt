@@ -1,6 +1,5 @@
 package com.example.earzikimarketplace.ui.view.reuseables
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,16 +34,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
-import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import com.example.earzikimarketplace.data.util.NavigationRoute
+import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-
-sealed class ImageState {
-    object Loading : ImageState()
-    data class Loaded(val image: ImageBitmap) : ImageState()
-    data class Failed(val reason: String) : ImageState()
-}
 
 @Composable
 fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: NavController, modifier: Modifier, index: Int) {

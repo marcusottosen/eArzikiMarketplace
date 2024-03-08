@@ -19,27 +19,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.core.view.WindowCompat
 import com.example.earzikimarketplace.R
 
-val PoppinsFontFamily = FontFamily(
-    Font(R.font.poppins_black, FontWeight.Black),
-    Font(R.font.poppins_black_italic, FontWeight.Black, FontStyle.Italic),
-    Font(R.font.poppins_bold, FontWeight.Bold),
-    Font(R.font.poppins_bold_italic, FontWeight.Bold, FontStyle.Italic),
-    Font(R.font.poppins_extra_bold, FontWeight.ExtraBold),
-    Font(R.font.poppins_extra_bold_italic, FontWeight.ExtraBold, FontStyle.Italic),
-    Font(R.font.poppins_extra_light, FontWeight.ExtraLight),
-    Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-    Font(R.font.poppins_light, FontWeight.Light),
-    Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_medium_italic, FontWeight.Medium, FontStyle.Italic),
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_semi_bold, FontWeight.SemiBold),
-    Font(R.font.poppins_thin, FontWeight.Thin),
-    Font(R.font.poppins_thin_italic, FontWeight.Thin, FontStyle.Italic)
+val JosefinFontFamily = FontFamily(
+    Font(R.font.josefinsans_bold, FontWeight.Bold),
+    Font(R.font.josefinsans_bolditalic, FontWeight.Bold, FontStyle.Italic),
+    Font(R.font.josefinsans_extralight, FontWeight.ExtraLight),
+    Font(R.font.josefinsans_extralightitalic, FontWeight.ExtraLight, FontStyle.Italic),
+    Font(R.font.josefinsans_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.josefinsans_light, FontWeight.Light),
+    Font(R.font.josefinsans_lightitalic, FontWeight.Light, FontStyle.Italic),
+    Font(R.font.josefinsans_medium, FontWeight.Medium),
+    Font(R.font.josefinsans_mediumitalic, FontWeight.Medium, FontStyle.Italic),
+    Font(R.font.josefinsans_regular, FontWeight.Normal),
+    Font(R.font.josefinsans_semibold, FontWeight.SemiBold),
+    Font(R.font.josefinsans_semibolditalic, FontWeight.SemiBold, FontStyle.Italic),
+    Font(R.font.josefinsans_thin, FontWeight.Thin),
+    Font(R.font.josefinsans_thinitalic, FontWeight.Thin, FontStyle.Italic)
 )
 
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFFFD5A0F),
+    surfaceTint = Color(0xFFFD7232),
     secondary = Color(0xFFCAA470),
     tertiary = Color(0xFFB8B9A0),
     background = Color(0xFFFFFFFF),
