@@ -17,6 +17,7 @@ import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
+import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.getSession
 import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +67,14 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
                 Log.e("SharedViewModel", "failed to fetch user: $userId, error: ${e.message}")
                 Result.failure(e)
             }
+        }
+    }
+
+    // Checks user's session at app startup
+    fun checkSession(onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val session = getSession() // Check the session
+            onResult(session.isNotEmpty() && session != "null")
         }
     }
 

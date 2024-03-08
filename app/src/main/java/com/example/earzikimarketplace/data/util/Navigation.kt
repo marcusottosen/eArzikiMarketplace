@@ -1,17 +1,30 @@
 package com.example.earzikimarketplace.data.util
 
-
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.getSession
 import com.example.earzikimarketplace.ui.view.pages.AddItem
 import com.example.earzikimarketplace.ui.view.pages.AddItemImagePicker
@@ -71,7 +84,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
         }
 
         composable(NavigationRoute.SplashScreen.route) {
-            SplashScreen()
+            SplashScreen(navController = navController, sharedViewModel = sharedViewModel)
         }
 
 
@@ -134,19 +147,3 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
 }
 
 
-/*itemModel?.let {
-    Log.e("Navigation", "Should load ItemInfoPage 3")
-    ItemInfoPage(item = it, navController = navController)
-}*/
-
-/*
-inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelableExtra(key)
-}
-
-inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelable(key)
-}
-*/
