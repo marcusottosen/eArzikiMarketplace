@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
+import com.example.earzikimarketplace.data.util.ImageCache
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.launch
@@ -47,17 +48,25 @@ fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: 
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     // Observe image loading toggle
     val isImageLoadingEnabled by sharedViewModel.imageLoadingEnabled.observeAsState(true)
+    val firstImageUrl = listing.image_urls?.getOrNull(0)
 
 
     // Trigger image loading based on the firstImageUrl and the image loading preference
-    val firstImageUrl = listing.image_urls?.getOrNull(0)
     LaunchedEffect(firstImageUrl, isImageLoadingEnabled) {
         if (isImageLoadingEnabled && firstImageUrl != null) {
-            coroutineScope.launch {
-                imageBitmap = sharedViewModel.fetchImageBitmap(firstImageUrl)
+            // Check the cache first
+            val cachedImage = ImageCache.get(firstImageUrl)
+            if (cachedImage != null) {
+                imageBitmap = cachedImage
+            } else {
+                // If not in the cache, load the image
+                imageBitmap = sharedViewModel.fetchImageBitmap(firstImageUrl)?.also { bitmap ->
+                    // Store the loaded image in the cache
+                    ImageCache.put(firstImageUrl, bitmap)
+                }
             }
         } else {
-            imageBitmap = null // Reset or set a default placeholder image if necessary
+            imageBitmap = null // Optionally, set a default placeholder here
         }
     }
 

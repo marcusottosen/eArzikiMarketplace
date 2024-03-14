@@ -214,6 +214,10 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                             CircularProgressIndicator()
                         }
                     }
+                    item{
+                        Spacer(modifier = Modifier.padding(bottom = 100.dp))
+
+                    }
                 }
 
                 null -> Text(stringResource(R.string.initializing))
@@ -221,6 +225,7 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
             if (uiState == UiState.LOADING) {
                 CircularProgressIndicator()
             }
+
 
         }
     }
@@ -297,38 +302,6 @@ fun MarketPageTop(
                 .clip(RoundedCornerShape(25.dp, 25.dp))
                 .background(colorResource(R.color.white))
         )
-    }
-}
-
-@Composable
-fun SortOptionsPopup(
-    expanded: MutableState<Boolean>,
-    onSortSelected: (String) -> Unit, // Callback when a sort option is selected
-    context: Context
-) {
-    DropdownMenu(
-        expanded = expanded.value,
-        onDismissRequest = { expanded.value = false }
-    ) {
-        // Define your sort options here
-        val sortOptions = listOf(
-            "Nearest Items",
-            "Date - newest",
-            "Date - oldest",
-            "Price - cheapest",
-            "Price - most expensive"
-        )
-
-        sortOptions.forEach { option ->
-            DropdownMenuItem(
-                text = { Text(option) },
-                onClick = {
-                    onSortSelected(option) // Handle the selected sort option
-                    Toast.makeText(context, option, Toast.LENGTH_SHORT).show()
-                    expanded.value = false // Dismiss the dropdown menu
-                }
-            )
-        }
     }
 }
 

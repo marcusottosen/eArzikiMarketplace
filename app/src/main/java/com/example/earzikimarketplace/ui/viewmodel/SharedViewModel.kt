@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import coil.decode.DecodeUtils.calculateInSampleSize
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
@@ -20,9 +21,14 @@ import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.getSession
 import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
+import com.example.earzikimarketplace.data.util.ImageCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel() {
@@ -117,29 +123,73 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
         }
     }
 
-    fun fetchItemImages(urls: List<String>) { // Used on product page. Gets all images for item
+    // Used on product page. Gets all images for item
+    fun fetchItemImages(urls: List<String>) {
         viewModelScope.launch {
-            _imagesData.value = urls.mapNotNull { url ->
-                try {
-                    val bytes = listingsDB.getItemImage(url)
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    bitmap.asImageBitmap()
-                } catch (e: Exception) {
-                    Log.e("SharedViewModel", "Failed to fetch image: $url", e)
-                    null
+            val images = urls.mapNotNull { url ->
+                async {
+                    ImageCache.get(url) ?: try {
+                        val bytes = listingsDB.getItemImage(url)
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()?.also { bitmap ->
+                            ImageCache.put(url, bitmap)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("SharedViewModel", "Failed to fetch image: $url", e)
+                        null
+                    }
                 }
-            }
+            }.awaitAll()  // Wait for all async operations to complete
+
+            _imagesData.value = images.filterNotNull()
         }
     }
-    suspend fun fetchImageBitmap(url: String): ImageBitmap? {   // Used on ItemCard. Gets first image for item
-        return try {
-            val bytes = listingsDB.getItemImage(url)
-            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+
+
+    // Used on each card in the marketplace. Retrieves only the first image.
+    suspend fun fetchImageBitmap(url: String): ImageBitmap? = withContext(Dispatchers.IO) {
+        try {
+            val bytes = listingsDB.getItemImage(url) // Runs off the main thread
+
+            // Decode image dimensions
+            val options = BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, 150, 150)
+            options.inJustDecodeBounds = false
+
+            // Decode bitmap with inSampleSize set
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)?.asImageBitmap()
         } catch (e: Exception) {
             Log.e("ItemCard", "Failed to fetch image: $url", e)
             null
         }
     }
+
+    // Calculate inSampleSize for use in a BitmapFactory.
+    // bitmaps to save memory consumption.
+    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // Raw height and width of image
+        val (height: Int, width: Int) = options.run { outHeight to outWidth }
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
+    }
+
+
 
 
 
