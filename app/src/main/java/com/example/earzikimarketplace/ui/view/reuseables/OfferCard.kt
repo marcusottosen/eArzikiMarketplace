@@ -91,3 +91,4 @@ fun OfferCard(navController: NavController) {
         }
     }
 }
+// TODO: Add to database and load the data from there.

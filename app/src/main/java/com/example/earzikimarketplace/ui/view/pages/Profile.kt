@@ -69,7 +69,8 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
 
             Text(
                 text = stringResource(R.string.load_images_for_items_in_the_marketplace),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 12.dp)
             )
             // UI elements...
             Switch(

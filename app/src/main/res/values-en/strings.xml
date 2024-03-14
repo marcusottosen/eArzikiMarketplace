@@ -60,6 +60,7 @@
     <string name="back">Back</string>
     <string name="user_profile">User Profile</string>
     <string name="current_language">Current Language: %1$s</string>
+    <string name="company_offers">Company Offers</string>
 
 </resources>
 

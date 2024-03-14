@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -120,11 +121,12 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(0.8f) // 80% of the screen width
                     .widthIn(max = 800.dp) // max width for large screens/tablets
-                    .padding(16.dp),
+                    .padding(16.dp).padding(bottom = 100.dp),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.post_item))
             }
+
 
         }
     }

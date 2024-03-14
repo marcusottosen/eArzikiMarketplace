@@ -61,5 +61,6 @@
     <string name="back">Retour</string>
     <string name="user_profile">Profil de l\'utilisateur</string>
     <string name="current_language">Langue actuelle : %1$s</string>
+    <string name="company_offers">Offres de l\'entreprise</string>
 
 </resources>

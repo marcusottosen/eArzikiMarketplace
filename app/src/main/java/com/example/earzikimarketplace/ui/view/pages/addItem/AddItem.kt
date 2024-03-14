@@ -202,11 +202,12 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(0.8f) // 80% of the screen width
                     .widthIn(max = 800.dp) // max width for large screens/tablets
-                    .padding(16.dp),
+                    .padding(16.dp).padding(bottom = 100.dp),
                 shape = RoundedCornerShape(8.dp) // more squared corners
             ) {
                 Text(stringResource(R.string.next))
             }
+
 
         }
 
