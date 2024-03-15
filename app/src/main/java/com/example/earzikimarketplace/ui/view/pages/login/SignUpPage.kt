@@ -7,19 +7,21 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.viewmodel.LoginViewModel
 
@@ -33,12 +35,14 @@ fun SignUpPage(navController: NavController) {
     var email by remember { mutableStateOf("myEmail@gmail.com") }
     var password by remember { mutableStateOf("Marcus123") }
     var confirmPassword by remember { mutableStateOf("Marcus123") }
-    var errorMessage by remember { mutableStateOf("") }
 
     var firstName by remember { mutableStateOf("John") }
     var surname by remember { mutableStateOf("Doe") }
     var phoneNumber by remember { mutableStateOf("12345678") }
     var age by remember { mutableStateOf("20") }
+
+    var errorMessage by remember { mutableStateOf<Int?>(null) }
+
 
     Column(
         modifier = Modifier
@@ -48,7 +52,7 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") }
+            label = { Text(stringResource(R.string.email)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -56,13 +60,13 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password
             ),
-            keyboardActions = KeyboardActions(onDone = { /* Handle Done action if needed */ })
+            keyboardActions = KeyboardActions(onDone = {})
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -70,13 +74,13 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") },
+            label = { Text(stringResource(R.string.confirm_password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password
             ),
-            keyboardActions = KeyboardActions(onDone = { /* Handle Done action if needed */ })
+            keyboardActions = KeyboardActions(onDone = {})
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -84,7 +88,7 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = firstName,
             onValueChange = { firstName = it },
-            label = { Text("First Name") }
+            label = { Text(stringResource(R.string.first_name)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -92,7 +96,7 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = surname,
             onValueChange = { surname = it },
-            label = { Text("Surname") }
+            label = { Text(stringResource(R.string.surname)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -100,7 +104,7 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            label = { Text("Phone Number") },
+            label = { Text(stringResource(R.string.phone_number)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone)
         )
 
@@ -109,43 +113,66 @@ fun SignUpPage(navController: NavController) {
         TextField(
             value = age,
             onValueChange = { age = it },
-            label = { Text("Age") },
+            label = { Text(stringResource(R.string.age)) },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
                 // Reset the error message at the beginning
-                errorMessage = ""
+                errorMessage  = null
 
                 // Validate all fields
                 when {
-                    firstName.isEmpty() -> errorMessage = "First name is required"
-                    surname.isEmpty() -> errorMessage = "Surname is required"
-                    phoneNumber.length != 8 -> errorMessage = "Phone number must be 8 digits"
-                    !phoneNumber.all { it.isDigit() } -> errorMessage = "Phone number must be numeric"
-                    !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> errorMessage = "Invalid email format"
-                    password.isEmpty() -> errorMessage = "Password is required"
-                    confirmPassword.isEmpty() -> errorMessage = "Confirm password is required"
-                    password != confirmPassword -> errorMessage = "Passwords do not match"
-                    firstName.any { it.isDigit() } -> errorMessage = "First name cannot contain numbers"
-                    surname.any { it.isDigit() } -> errorMessage = "Surname cannot contain numbers"
-                    age.isEmpty() -> errorMessage = "Age is required"
-                    age.toIntOrNull()?.let { it < 16 } ?: true -> errorMessage = "You must be above 16 years old to sign up"
-
+                    firstName.isEmpty() -> {
+                        errorMessage  = R.string.first_name_is_required
+                    }
+                    surname.isEmpty() -> {
+                        errorMessage = R.string.surname_is_required
+                    }
+                    phoneNumber.length != 8 -> {
+                        errorMessage = R.string.phone_number_must_be_8_digits
+                    }
+                    !phoneNumber.all { it.isDigit() } -> {
+                        errorMessage = R.string.phone_number_must_be_numeric
+                    }
+                    !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                        errorMessage = R.string.invalid_email_format
+                    }
+                    password.isEmpty() -> {
+                        errorMessage = R.string.password_is_required
+                    }
+                    confirmPassword.isEmpty() -> {
+                        errorMessage = R.string.confirm_password_is_required
+                    }
+                    password != confirmPassword -> {
+                        errorMessage = R.string.passwords_do_not_match
+                    }
+                    firstName.any { it.isDigit() } -> {
+                        errorMessage = R.string.first_name_cannot_contain_numbers
+                    }
+                    surname.any { it.isDigit() } -> {
+                        errorMessage = R.string.surname_cannot_contain_numbers
+                    }
+                    age.isEmpty() -> {
+                        errorMessage = R.string.age_is_required
+                    }
+                    age.toIntOrNull()?.let { it < 16 } ?: true -> {
+                        errorMessage =
+                            R.string.you_must_be_above_16_years_old_to_sign_up
+                    }
                 }
 
                 // Only proceed if there are no errors
-                if (errorMessage.isEmpty()) {
+                if (errorMessage == null) {
                     viewModel.signUp(context, email, firstName, surname, phoneNumber.toInt(), age.toInt(), password)
                 }
             }
         ) {
-            Text("Sign Up")
+            Text(stringResource(R.string.sign_up))
         }
 
         TextButton(
@@ -153,15 +180,12 @@ fun SignUpPage(navController: NavController) {
                 navController.navigate(NavigationRoute.Login.route)
             }
         ) {
-            Text("Already a member? Login!")
+            Text(stringResource(R.string.already_a_member_login))
         }
 
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                modifier = Modifier.fillMaxWidth()
-            )
+        errorMessage?.let { resId ->
+            Text(stringResource(id = resId), color = MaterialTheme.colorScheme.error)
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         // Observe the sign-up state using the view model
@@ -172,26 +196,38 @@ fun SignUpPage(navController: NavController) {
             }
             is LoginViewModel.SignUpState.Success -> {
                 val email = (signUpState as LoginViewModel.SignUpState.Success).email
-                Text("Sign-up successful! Email: $email")
+                Text(stringResource(R.string.sign_up_successful_email, email))
                 navController.navigate(NavigationRoute.Home.route)
                 viewModel.resetLoginState()
             }
             is LoginViewModel.SignUpState.Error -> {
                 val rawErrorMessage = (signUpState as LoginViewModel.SignUpState.Error).message
                 val userFriendlyErrorMessage = when {
-                    rawErrorMessage.contains("user already registered", ignoreCase = true) -> "Email already registered"
-                    rawErrorMessage.contains("not_found", ignoreCase = true) -> "Resource not found or access denied"
-                    rawErrorMessage.contains("unauthorized", ignoreCase = true) -> "Unauthorized access"
-                    rawErrorMessage.contains("too many requests", ignoreCase = true) -> "Too many requests, please try again later"
-                    rawErrorMessage.contains("database_timeout", ignoreCase = true) -> "Database timeout, please try again later"
-                    rawErrorMessage.contains("internal_server_error", ignoreCase = true) -> "Internal server error, please contact support"
-                    else -> rawErrorMessage // Use the original error message if no specific condition is matched
+                    rawErrorMessage.contains("user already registered", ignoreCase = true) -> {
+                        stringResource(R.string.email_already_registered)
+                    }
+                    rawErrorMessage.contains("not_found", ignoreCase = true) -> {
+                        stringResource(R.string.resource_not_found_or_access_denied)
+                    }
+                    rawErrorMessage.contains("unauthorized", ignoreCase = true) -> {
+                        stringResource(R.string.unauthorized_access)
+                    }
+                    rawErrorMessage.contains("too many requests", ignoreCase = true) -> {
+                        stringResource(R.string.too_many_requests_please_try_again_later)
+                    }
+                    rawErrorMessage.contains("database_timeout", ignoreCase = true) -> {
+                        stringResource(R.string.database_timeout_please_try_again_later)
+                    }
+                    rawErrorMessage.contains("internal_server_error", ignoreCase = true) -> {
+                        stringResource(R.string.internal_server_error_please_contact_support)
+                    }
+                    else -> {
+                        rawErrorMessage
+                    } // Use the original error message if no specific condition is matched
                 }
                 Text(userFriendlyErrorMessage)
             }
-
             else -> {
-                // Show the sign-up form when the state is not loading, success, or error
             }
         }
     }

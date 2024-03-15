@@ -170,7 +170,7 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
 
     // Calculate inSampleSize for use in a BitmapFactory.
     // bitmaps to save memory consumption.
-    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         // Raw height and width of image
         val (height: Int, width: Int) = options.run { outHeight to outWidth }
         var inSampleSize = 1

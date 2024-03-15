@@ -61,6 +61,39 @@
     <string name="user_profile">User Profile</string>
     <string name="current_language">Current Language: %1$s</string>
     <string name="company_offers">Company Offers</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_sign_up_now">Don\'t have an account? Sign up now!</string>
+    <string name="please_fill_in_all_fields">Please fill in all fields</string>
+    <string name="sign_in_successful_email">Sign-in successful! Email: %1$s</string>
+    <string name="error">Error</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="first_name">First Name</string>
+    <string name="surname">Surname</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="age">Age</string>
+    <string name="first_name_is_required">First name is required</string>
+    <string name="surname_is_required">Surname is required</string>
+    <string name="phone_number_must_be_8_digits">Phone number must be 8 digits</string>
+    <string name="phone_number_must_be_numeric">Phone number must be numeric</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="password_is_required">Password is required</string>
+    <string name="confirm_password_is_required">Confirm password is required</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="first_name_cannot_contain_numbers">First name cannot contain numbers</string>
+    <string name="surname_cannot_contain_numbers">Surname cannot contain numbers</string>
+    <string name="age_is_required">Age is required</string>
+    <string name="you_must_be_above_16_years_old_to_sign_up">You must be above 16 years old to sign up</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_a_member_login">Already a member? Login!</string>
+    <string name="sign_up_successful_email">Sign-up successful! Email: %1$s</string>
+    <string name="email_already_registered">Email already registered</string>
+    <string name="resource_not_found_or_access_denied">Resource not found or access denied</string>
+    <string name="unauthorized_access">Unauthorized access</string>
+    <string name="too_many_requests_please_try_again_later">Too many requests, please try again later</string>
+    <string name="database_timeout_please_try_again_later">Database timeout, please try again later</string>
+    <string name="internal_server_error_please_contact_support">Internal server error, please contact support</string>
 
 </resources>
 
