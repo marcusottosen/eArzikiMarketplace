@@ -95,5 +95,8 @@
     <string name="too_many_requests_please_try_again_later">Trop de demandes, veuillez réessayer plus tard</string>
     <string name="database_timeout_please_try_again_later">Délai d\'attente de la base de données, veuillez réessayer plus tard</string>
     <string name="internal_server_error_please_contact_support">Erreur interne du serveur, veuillez contacter le support</string>
+    <string name="please_pick_at_least_one_tag">Veuillez sélectionner au moins une étiquette</string>
+    <string name="whatsapp_text">Bonjour, je suis intéressé(e) par le %1$s que vous avez annoncé sur le Marketplace eArziki. \nEst-il toujours disponible ?</string>
+    <string name="sms_text">Bonjour, je suis intéressé(e) par le %1$s que vous avez annoncé sur le Marketplace eArziki. \nEst-il toujours disponible ?</string>
 
 </resources>

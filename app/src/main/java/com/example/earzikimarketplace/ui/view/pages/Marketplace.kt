@@ -1,7 +1,6 @@
 package com.example.earzikimarketplace.ui.view.pages
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -28,8 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -170,7 +166,7 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                         IconButton(
                             onClick = { // Clear tag filter and show all items
                                 clickedTag.value = -1
-                                viewModel.onTagSelected(pageCategoryID, null)
+                                viewModel.onTagOrSortingSelected(pageCategoryID, null)
                             },
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -189,7 +185,8 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
             Spacer(modifier = Modifier.height(15.dp))
             FilterDropdown(
                 expanded = showFilterMenu,
-                onSortSelected = viewModel::handleSortOptionSelected, // Pass the method reference directly
+                onSortSelected = viewModel::handleSortOptionSelected, // Pass the method reference directly,
+                categoryID = pageCategoryID
             )
 
             when (uiState) {
@@ -326,7 +323,7 @@ fun VerticalScrollTags(
                     .padding(vertical = 5.dp)
                     .clickable {
                         onTagClicked(tag.id)
-                        viewModel.onTagSelected(categoryID, index + 1)
+                        viewModel.onTagOrSortingSelected(categoryID, index + 1)
 
                     }
             ) {

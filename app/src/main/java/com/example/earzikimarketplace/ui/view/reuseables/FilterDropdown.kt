@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import com.example.earzikimarketplace.data.model.dataClass.SortOption
+import kotlin.reflect.KFunction2
 
 @Composable
 fun FilterDropdown(
     expanded: MutableState<Boolean>,
-    onSortSelected: (Int) -> Unit
+    onSortSelected: KFunction2<Int, Int, Unit>,
+    categoryID: Int
 ) {
     val sortOptions = SortOption.values()
 
@@ -23,7 +25,7 @@ fun FilterDropdown(
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = option.resourceId)) },
                 onClick = {
-                    onSortSelected(option.id)
+                    onSortSelected(option.id, categoryID)
                     expanded.value = false
                 }
             )

@@ -394,7 +394,7 @@ fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: St
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { viewModel.textWhatsApp("4560906128", itemTitle) },
+                onClick = { viewModel.textWhatsApp("4560906128", itemTitle, context) },
                 modifier = Modifier
                     .weight(1f)
                     .height(50.dp),

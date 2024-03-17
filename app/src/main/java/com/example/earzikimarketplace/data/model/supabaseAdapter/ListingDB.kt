@@ -25,19 +25,39 @@ class ListingsDB () {
     suspend fun getItems(
         start: Long,
         pageSize: Long,
-        category: Int
+        category: Int,
+        tagId: Int? = null,
+        sortByDateDescending: Boolean = true,
+        sortByPrice: Boolean = false, // If it should be sorted by price or date
+        priceAscending: Boolean = true
     ): Result<List<Listing>> {
+        val order = when {
+            sortByPrice -> if (priceAscending) Order.ASCENDING else Order.DESCENDING
+            else -> if (sortByDateDescending) Order.DESCENDING else Order.ASCENDING
+        }
+        val sortColumn = if (sortByPrice) "price" else "post_date"
 
         return try {
             //val client = getClient(url, key)
             val client = SupabaseManager.getClient()
 
             //Log.d("supabase", "getItems: $start, $pageSize")
-            val response = client.postgrest[tableName].select {
-                range(start until start + pageSize)
-                order("post_date", Order.DESCENDING)  // Newest items first
-                eq("active", "TRUE")
-                eq("category_id", category)
+            val response = if (tagId == null) {    // If no tag is picked
+                client.postgrest[tableName].select {
+                    range(start until start + pageSize)
+                    order(sortColumn, order)
+                    eq("active", "TRUE")
+                    eq("category_id", category)
+                }
+            } else {    // If tag is picked
+                val columns = Columns.raw("*, ListingTags!inner(tag_id)")
+                client.postgrest["Listings"].select(columns = columns) {
+                    range(start until start + pageSize)
+                    order(sortColumn, order)
+                    eq("active", "TRUE")
+                    eq("category_id", category)
+                    filter(column = "ListingTags.tag_id", operator = FilterOperator.EQ, value = tagId)
+                }
             }
             val data = response.decodeList<Listing>()
             //Log.d("supabase", "Data: $data")
@@ -51,7 +71,7 @@ class ListingsDB () {
     /**
      * Gets a list of items within a category with a specific tag from the database
      */
-    suspend fun getItemsByTagId(
+   /* suspend fun getItemsByTagId(
         start: Long,
         pageSize: Long,
         category: Int,
@@ -84,7 +104,7 @@ class ListingsDB () {
             Log.e("supabase", "Error getting items by tag_id: ${e.message}")
             Result.failure(e)
         }
-    }
+    }*/
 
 
 

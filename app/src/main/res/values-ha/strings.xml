@@ -95,5 +95,8 @@
     <string name="too_many_requests_please_try_again_later">Akwai yawan buƙatu, da fatan a gwada sake daga baya</string>
     <string name="database_timeout_please_try_again_later">Lokacin ajiyar bayanai ya ƙare, da fatan a sake gwadawa daga baya</string>
     <string name="internal_server_error_please_contact_support">Kuskure na cikin uwar garke, da fatan a tuntubi goyon baya</string>
+    <string name="please_pick_at_least_one_tag">Da fatan za a zabi aƙalla alama ɗaya</string>
+    <string name="whatsapp_text">Sannu, Ina sha\'awar %1$s da ka jera a Kasuwar eArziki. \nShin har yanzu yana nan?</string>
+    <string name="sms_text">Sannu, Ina sha\'awar %1$s da ka jera a Kasuwar eArziki. \nShin har yanzu yana nan?</string>
 
 </resources>

@@ -95,6 +95,8 @@
     <string name="database_timeout_please_try_again_later">Database timeout, please try again later</string>
     <string name="internal_server_error_please_contact_support">Internal server error, please contact support</string>
     <string name="please_pick_at_least_one_tag">Please pick at least one tag</string>
+    <string name="whatsapp_text">Hello, I\'m interested in the %1$s you listed on eArziki Marketplace. \nIt it still available?</string>
+    <string name="sms_text">Hello, I\'m interested in the %1$s you listed on eArziki Marketplace. \nIt it still available?</string>
 
 </resources>
 

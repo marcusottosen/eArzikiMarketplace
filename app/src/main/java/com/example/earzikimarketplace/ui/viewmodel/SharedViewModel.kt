@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import coil.decode.DecodeUtils.calculateInSampleSize
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.Location
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
@@ -97,8 +98,8 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
         }
     }
 
-    fun textWhatsApp(phoneNumber: String, itemTitle: String) {
-        val defaultMessage = "Hello, I'm interested in the $itemTitle you listed on eArziki Marketplace. \nIt it still available?"
+    fun textWhatsApp(phoneNumber: String, itemTitle: String, context: Context) {
+        val defaultMessage = context.getString(R.string.whatsapp_text, itemTitle)
         val encodedMessage = Uri.encode(defaultMessage)
         val url = "https://api.whatsapp.com/send?phone=$phoneNumber&text=$encodedMessage"
         val openWhatsAppIntent = Intent(Intent.ACTION_VIEW)
@@ -107,7 +108,7 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
     }
 
     fun sendSMS(phoneNumber: String, itemTitle: String, context: Context) {
-        val defaultMessage = "Hello, I'm interested in the $itemTitle you listed on eArziki Marketplace. \nIt it still available?"
+        val defaultMessage = context.getString(R.string.sms_text, itemTitle)
 
         try {
             val uri = Uri.parse("sms:$phoneNumber")

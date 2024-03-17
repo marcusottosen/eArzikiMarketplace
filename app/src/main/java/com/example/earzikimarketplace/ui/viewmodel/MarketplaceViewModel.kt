@@ -1,12 +1,6 @@
 package com.example.earzikimarketplace.ui.viewmodel
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,15 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.SortOption
-import com.example.earzikimarketplace.data.model.dataClass.TagItem
 import com.example.earzikimarketplace.data.model.dataClass.UiState
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
-import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
-
 
 
 class MarketplaceViewModel() : ViewModel() {
@@ -40,8 +28,15 @@ class MarketplaceViewModel() : ViewModel() {
     private val _currentPage = MutableLiveData(0)
     private val _isLoading = MutableLiveData(false)
 
+    // Sorting criteria
+    private var sortByDateDescending = true
+    private var sortByPrice = false
+    private var priceAscending = true
+
+    private val _isPaginating = MutableLiveData(false)
+    val isPaginating: LiveData<Boolean> get() = _isPaginating
+
     val items: LiveData<List<Listing>> get() = _items
-    val isLoading: LiveData<Boolean> get() = _isLoading
     private val _allItemsLoaded = MutableLiveData(false)
     //val allItemsLoaded: LiveData<Boolean> = _allItemsLoaded
 
@@ -59,13 +54,7 @@ class MarketplaceViewModel() : ViewModel() {
     }
     val uiState: LiveData<UiState> = _uiState
 
-    fun checkAndFetchNextPage(pageCategoryId: Int) {
-        if ((items.value?.size
-                ?: 0) >= _currentPage.value!! * pageSize && !_isLoading.value!! && !_allItemsLoaded.value!!
-        ) {
-            fetchNextPage(pageCategoryId)
-        }
-    }
+
 
 
     // Update the UI state based on the data
@@ -77,18 +66,29 @@ class MarketplaceViewModel() : ViewModel() {
         }
     }
 
-    // Call this method when the tag changes
-    fun onTagSelected(categoryId: Int, tag: Int?) {
+    fun checkAndFetchNextPage(pageCategoryId: Int) {
+        if ((items.value?.size
+                ?: 0) >= _currentPage.value!! * pageSize && !_isLoading.value!! && !_allItemsLoaded.value!!
+        ) {
+            fetchNextPage(pageCategoryId)
+        }
+    }
+
+    // Call this method when tag or sorting changes
+    fun onTagOrSortingSelected(categoryId: Int, tag: Int?) {
+        _uiState.value = UiState.LOADING
         clearItems()
         fetchNextPage(categoryId, tag)
     }
 
-    private val _isPaginating = MutableLiveData(false)
-    val isPaginating: LiveData<Boolean> get() = _isPaginating
+
 
     fun fetchNextPage(category: Int, tag: Int? = null) {
-        Log.d("MarketplaceViewModel", "fetchNextPage: $category / $tag")
+        //Log.d("MarketplaceViewModel", "fetchNextPage: $category / $tag")
         if (_isLoading.value == true || _allItemsLoaded.value == true || _isPaginating.value == true) return
+
+        _isLoading.value = true
+        updateUiState()
 
         _isPaginating.value = true
         val currentPage = _currentPage.value ?: 0
@@ -97,11 +97,23 @@ class MarketplaceViewModel() : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val result = if (tag == null) { // If no tag picked, get all items in category
+                val result =
                     listingsDB.getItems(
                         start,
                         pageSize,
-                        category
+                        category,
+                        tag,
+                        sortByDateDescending = sortByDateDescending,
+                        sortByPrice = sortByPrice,
+                        priceAscending = priceAscending
+
+                    )
+                /*val result = if (tag == null) { // If no tag picked, get all items in category
+                    listingsDB.getItems(
+                        start,
+                        pageSize,
+                        category,
+                        tag
                     )
                 } else {
                     listingsDB.getItemsByTagId( //If tag picked, get items with that tag in category
@@ -110,7 +122,7 @@ class MarketplaceViewModel() : ViewModel() {
                         category,
                         tag,
                     )
-                }
+                }*/
                 val newItems = result.getOrNull() ?: emptyList() // Extract list from Result
 
                 // Check for duplicates and empty responses from the server
@@ -124,6 +136,8 @@ class MarketplaceViewModel() : ViewModel() {
                     _currentPage.value = currentPage + 1
                 }
                 _uiState.value = if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
+                updateUiState()
+
 
             } catch (e: Exception) {
                 // Handle error
@@ -163,33 +177,34 @@ class MarketplaceViewModel() : ViewModel() {
         }
     }
 
-    fun handleSortOptionSelected(optionId: Int) {
+    fun handleSortOptionSelected(optionId: Int, categoryId: Int) {
         val option = SortOption.values().find { it.id == optionId }
         when (option) {
             SortOption.NearestItems -> sortItemsByNearest()
-            SortOption.DateNewest -> sortItemsByDate(isNewestFirst = true)
-            SortOption.DateOldest -> sortItemsByDate(isNewestFirst = false)
-            SortOption.PriceCheapest -> sortItemsByPrice(isCheapestFirst = true)
-            SortOption.PriceMostExpensive -> sortItemsByPrice(isCheapestFirst = false)
+            SortOption.DateNewest -> sortItemsByDate(sortNewestFirst = true, categoryId)
+            SortOption.DateOldest -> sortItemsByDate(sortNewestFirst = false, categoryId)
+            SortOption.PriceCheapest -> sortItemsByPrice(isCheapestFirst = true, categoryId)
+            SortOption.PriceMostExpensive -> sortItemsByPrice(isCheapestFirst = false, categoryId)
             null -> Log.d("MarketplaceViewModel", "Unknown sort option")
         }
     }
-
-    // TODO: Add functionality to the filters: ClearItems() and fetch new.
 
     private fun sortItemsByNearest() {
         Log.d("marketviewmodel", "sort by nearest item")
         // Implementation of sorting items by nearest
     }
 
-    private fun sortItemsByDate(isNewestFirst: Boolean) {
-        Log.d("marketviewmodel", "sort item by date. Newest: $isNewestFirst")
-
-        // Implementation of sorting items by date
+    private fun sortItemsByDate(sortNewestFirst: Boolean, categoryId: Int) {
+        Log.d("marketviewmodel", "sort item by date. Newest: $sortNewestFirst")
+        sortByPrice = false
+        sortByDateDescending = sortNewestFirst
+        onTagOrSortingSelected(categoryId = categoryId, tag = null)
     }
 
-    private fun sortItemsByPrice(isCheapestFirst: Boolean) {
-        // Implementation of sorting items by price
+    private fun sortItemsByPrice(isCheapestFirst: Boolean, categoryId: Int) {
+        sortByPrice = true
+        priceAscending = isCheapestFirst
+        onTagOrSortingSelected(categoryId = categoryId, tag = null)
     }
 }
 
