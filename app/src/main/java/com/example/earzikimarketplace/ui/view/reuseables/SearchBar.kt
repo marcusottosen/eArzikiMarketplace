@@ -22,6 +22,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +40,12 @@ fun SearchBar(
     onSearchTextChanged: (String) -> Unit,
     onSearchClicked: () -> Unit,
     onFilterClicked: () -> Unit,
-    onClearClicked: () -> Unit
+    onClearClicked: () -> Unit,
+
+    // Filter dropdown items
+    expanded: MutableState<Boolean>,
+    onSortSelected: (Int, Int) -> Unit,
+    categoryID: Int
 ) {
     val height = 35.dp
     val fontSize = 14.sp
@@ -56,8 +62,8 @@ fun SearchBar(
                 .width(55.dp)
                 .height(height)
                 .background(
-                    color = MaterialTheme.colorScheme.primary, // Set the desired background color (orange in this case)
-                    shape = RoundedCornerShape(50) // Rounded corners with a radius of 50
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(50) // Rounded corners
                 )
         ) {
             IconButton(
@@ -66,12 +72,17 @@ fun SearchBar(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.filter),
-                    contentDescription = "Custom Icon",
+                    contentDescription = "Filter",
                     modifier = Modifier
                         .size(25.dp),
                     colorFilter = ColorFilter.tint(Color.White)
                 )
             }
+            FilterDropdown(
+                expanded = expanded,
+                onSortSelected = onSortSelected, // Pass the method reference
+                categoryID = categoryID
+            )
         }
 
         Spacer(modifier = Modifier.width(25.dp))
@@ -140,8 +151,8 @@ fun SearchBar(
                 .width(55.dp)
                 .height(height)
                 .background(
-                    color = MaterialTheme.colorScheme.primary, // Set the desired background color (orange in this case)
-                    shape = RoundedCornerShape(50) // Rounded corners with a radius of 50
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(50) // Rounded corners
                 )
         ) {
             IconButton(

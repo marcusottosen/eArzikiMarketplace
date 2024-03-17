@@ -64,7 +64,6 @@ import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavController, pageCategoryID: Int) {
@@ -125,105 +124,110 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
             val categoryTitle = categoryEnum?.getTitle(context) ?: stringResource(R.string.unknown_category)
             MarketPageTop(navController, categoryTitle, viewModel, pageCategoryID, onTagClicked)
         }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp)
+    ) {paddingValues ->
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(100.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp)
+            ) {
+                //Spacer(modifier = Modifier.height(100.dp))
 
-            if (clickedTag.value == -1) {   // If no tag has been picked
-                SearchBar(
-                    searchText = searchText,
-                    onSearchTextChanged = { newText -> searchText = newText },
-                    onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside the lambda
-                    onFilterClicked = { onFilterClicked() },
-                    onClearClicked = { onClearSearchClicked() }
-                )
-            } else {
-                val tagEnum = TagEnum.fromId(clickedTag.value)
-                val tagTitle = tagEnum?.getTitle(context) ?: stringResource(R.string.unknown_tag)
-                val tagIcon = tagEnum?.icon ?: R.drawable.search
-                Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                    Image(
-                        painter = painterResource(id = tagIcon),
-                        contentDescription = "Custom Icon",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(end = 3.dp)
+                if (clickedTag.value == -1) {   // If no tag has been picked
+                    SearchBar(
+                        searchText = searchText,
+                        onSearchTextChanged = { newText -> searchText = newText },
+                        onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside the lambda
+                        onFilterClicked = { onFilterClicked() },
+                        onClearClicked = { onClearSearchClicked() },
+                        expanded = showFilterMenu,
+                        onSortSelected = viewModel::handleSortOptionSelected,
+                        categoryID = pageCategoryID
                     )
-                    Text(text = tagTitle, style = MaterialTheme.typography.labelLarge)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .size(35.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(50)
-                            )
-                    ) {
-                        IconButton(
-                            onClick = { // Clear tag filter and show all items
-                                clickedTag.value = -1
-                                viewModel.onTagOrSortingSelected(pageCategoryID, null)
-                            },
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Back",
-                                tint = MaterialTheme.colorScheme.background,
-
-                                )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                }
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-            FilterDropdown(
-                expanded = showFilterMenu,
-                onSortSelected = viewModel::handleSortOptionSelected, // Pass the method reference directly,
-                categoryID = pageCategoryID
-            )
-
-            when (uiState) {
-                UiState.LOADING -> Text(stringResource(R.string.loading))
-                UiState.EMPTY -> Text(stringResource(R.string.no_items_found))
-                UiState.CONTENT -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(bottom =  100.dp)
-
-                ) {
-                    itemsIndexed(items) { index, item ->
-                        if (index == items.lastIndex && !isPaginating) {
-                            viewModel.checkAndFetchNextPage(pageCategoryID)
-                        }
-                        ItemCard(
-                            listing = item,
-                            sharedViewModel = sharedViewModel,
-                            navController,
-                            modifier = Modifier.weight(1f),
-                            index = index
+                } else {
+                    val tagEnum = TagEnum.fromId(clickedTag.value)
+                    val tagTitle =
+                        tagEnum?.getTitle(context) ?: stringResource(R.string.unknown_tag)
+                    val tagIcon = tagEnum?.icon ?: R.drawable.search
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        Image(
+                            painter = painterResource(id = tagIcon),
+                            contentDescription = "Custom Icon",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 3.dp)
                         )
-                    }
-                    if (isPaginating) {
-                        item {
-                            CircularProgressIndicator()
-                        }
-                    }
+                        Text(text = tagTitle, style = MaterialTheme.typography.labelLarge)
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(35.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    shape = RoundedCornerShape(50)
+                                )
+                        ) {
+                            IconButton(
+                                onClick = { // Clear tag filter and show all items
+                                    clickedTag.value = -1
+                                    viewModel.onTagOrSortingSelected(pageCategoryID, null)
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Back",
+                                    tint = MaterialTheme.colorScheme.background,
 
+                                    )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                    }
                 }
 
-                null -> Text(stringResource(R.string.initializing))
-            }
-            if (uiState == UiState.LOADING) {
-                CircularProgressIndicator()
-            }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                when (uiState) {
+                    UiState.LOADING -> Text(stringResource(R.string.loading))
+                    UiState.EMPTY -> Text(stringResource(R.string.no_items_found))
+                    UiState.CONTENT -> LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(bottom = 100.dp)
+
+                    ) {
+                        itemsIndexed(items) { index, item ->
+                            if (index == items.lastIndex && !isPaginating) {
+                                viewModel.checkAndFetchNextPage(pageCategoryID)
+                            }
+                            ItemCard(
+                                listing = item,
+                                sharedViewModel = sharedViewModel,
+                                navController,
+                                modifier = Modifier.weight(1f),
+                                index = index
+                            )
+                        }
+                        if (isPaginating) {
+                            item {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                    }
+
+                    null -> Text(stringResource(R.string.initializing))
+                }
+                if (uiState == UiState.LOADING) {
+                    CircularProgressIndicator()
+                }
 
 
+            }
         }
     }
 }
