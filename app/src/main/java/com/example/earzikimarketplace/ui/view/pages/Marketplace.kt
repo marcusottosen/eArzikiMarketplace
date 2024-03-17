@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -196,6 +197,8 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                 UiState.EMPTY -> Text(stringResource(R.string.no_items_found))
                 UiState.CONTENT -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(bottom =  100.dp)
+
                 ) {
                     itemsIndexed(items) { index, item ->
                         if (index == items.lastIndex && !isPaginating) {
@@ -214,10 +217,7 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                             CircularProgressIndicator()
                         }
                     }
-                    item{
-                        Spacer(modifier = Modifier.padding(bottom = 100.dp))
 
-                    }
                 }
 
                 null -> Text(stringResource(R.string.initializing))

@@ -61,9 +61,6 @@ class ListingsDB () {
         return try {
             val client = SupabaseManager.getClient()
 
-            // Specify the columns to retrieve from the Listings table
-            // and include the ListingTags table to filter by tag_id
-
             val columns = Columns.raw("*, ListingTags!inner(tag_id)")
             Log.d("supabase ListingDB", "category: $category")
             Log.d("supabase ListingDB", "TagId: $tagId")
@@ -79,6 +76,8 @@ class ListingsDB () {
 
             // Decode the response into a list of Listing objects
             val data = response.decodeList<Listing>()
+            Log.d("supabase data", "Items: $data")
+
             Result.success(data)
         } catch (e: Exception) {
             // Log the error and return a failure result

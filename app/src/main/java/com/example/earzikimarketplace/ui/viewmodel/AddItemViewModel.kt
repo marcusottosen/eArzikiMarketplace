@@ -109,9 +109,8 @@ class AddItemViewModel() : ViewModel() {
                 Log.d("MarketplaceViewModel", "Adding item: $updatedListing")
                 val listingID = updatedListing?.let { listingsDB.addItem(it) }
 
-                val testTags = listOf(TagEnum.BOOKS, TagEnum.TECHNOLOGY, TagEnum.DECORATIVES)
                 if (listingID != null) {
-                    listingsDB.attachTags(listingID, testTags)
+                    listingsDB.attachTags(listingID, selectedTags)
                 }
 
 

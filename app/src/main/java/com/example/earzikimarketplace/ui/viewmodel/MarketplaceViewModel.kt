@@ -191,58 +191,5 @@ class MarketplaceViewModel() : ViewModel() {
     private fun sortItemsByPrice(isCheapestFirst: Boolean) {
         // Implementation of sorting items by price
     }
-
-
-
-
-    /*
-        private val _addItemStatus = MutableStateFlow<AddItemStatus>(AddItemStatus.Idle)
-        val addItemStatus: StateFlow<AddItemStatus> = _addItemStatus
-        fun resetAddItemStatus() {
-            _addItemStatus.value = AddItemStatus.Idle
-        }
-
-        fun updateStatus(newStatus: AddItemStatus) {
-            _addItemStatus.value = newStatus
-        }*/
-
-    /* fun addItem(context: Context, listing: Listing) {
-         viewModelScope.launch {
-             _addItemStatus.value = AddItemStatus.Loading
-             try {
-                 Log.d("MarketplaceViewModel", "Adding item: $listing")
-                 //val userInfo = getUserInfo(apiKey, apiUrl) // retrieves user info from the database
-                 val userInfo = SupabaseManager.getLoggedInUser() // retrieves user info from the database
-
-                 val updatedListing = Listing(
-                     user_id = UUID.fromString(userInfo.id),
-                     title = listing.title,
-                     description = listing.description,
-                     price = listing.price,
-                     category_id = listing.category_id,
-                     image_urls = listing.image_urls
-                 )
-
-                 listingsDB.addItem(updatedListing)   // Adds item to database
-                 val updatedItems = (_items.value.orEmpty() + updatedListing).toMutableList()
-                 _items.value = updatedItems
-
-                 _addItemStatus.value = AddItemStatus.Success // Set to success after adding
-
-
-                 _addItemStatus.value = AddItemStatus.Success    //allows for navigation
-                 listener?.onItemAddedSuccess()  // Notify success by toast
-
-             } catch (e: Exception) {
-                 Log.e("MarketplaceViewModel", "Error adding item: ${e.message}")
-                 _addItemStatus.value = AddItemStatus.Error(e.message ?: "Unknown error")
-
-                 _addItemStatus.value = e.message?.let { AddItemStatus.Error(it) }!!
-
-                 listener?.onError("Error adding item: ${e.message}")  // Notify the listener about the error
-             }
-         }
-     }*/
 }
-// TODO: two listeners for the same thing? (_addItemStatus.value and listener?.onItemAddedSuccess())
 
