@@ -16,6 +16,7 @@ sealed class NavigationRoute(var route: String) {
     object SplashScreen             : NavigationRoute("splashScreen")
     object Profile                  : NavigationRoute("profile")
     object Offers                  : NavigationRoute("offers")
+    object CheckboxGrid                  : NavigationRoute("checkboxGrid")
 
 }
 

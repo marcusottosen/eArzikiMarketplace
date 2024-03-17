@@ -56,8 +56,8 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
         }
     }
 
-    val titleState = remember { mutableStateOf("Handcrafted Wooden Sculpture") }
-    val descriptionState = remember { mutableStateOf("Handcrafted wooden sculpture depicting traditional motifs and symbols, a unique piece of art for collectors or enthusiasts.") }
+    val titleState = remember { mutableStateOf("") }
+    val descriptionState = remember { mutableStateOf("replace") }
     val priceState = remember { mutableStateOf("3999") }
     val isNumber = remember(priceState.value) { priceState.value.toFloatOrNull() != null }
 
@@ -195,8 +195,8 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                         )
                     )
                     //viewModel.addItem(newListing)
-                    // Navigate to the status screen
-                    navController.navigate(NavigationRoute.AddItemImagePicker.route)
+                    navController.navigate(NavigationRoute.CheckboxGrid.route)
+                    //navController.navigate(NavigationRoute.AddItemImagePicker.route)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

@@ -115,7 +115,11 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                     }
 
                     viewModel.uploadImagesAndAddItem(context)
-                    navController.navigate(NavigationRoute.AddItemStatusScreen.route)
+                    navController.navigate(NavigationRoute.AddItemStatusScreen.route){
+                        popUpTo(NavigationRoute.AddItemStatusScreen.route){
+                            inclusive = true
+                        }
+                    }
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

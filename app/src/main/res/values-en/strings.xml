@@ -94,6 +94,7 @@
     <string name="too_many_requests_please_try_again_later">Too many requests, please try again later</string>
     <string name="database_timeout_please_try_again_later">Database timeout, please try again later</string>
     <string name="internal_server_error_please_contact_support">Internal server error, please contact support</string>
+    <string name="please_pick_at_least_one_tag">Please pick at least one tag</string>
 
 </resources>
 

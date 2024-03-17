@@ -20,6 +20,7 @@ import com.example.earzikimarketplace.ui.view.pages.MarketplaceScreen
 import com.example.earzikimarketplace.ui.view.pages.Home
 import com.example.earzikimarketplace.ui.view.pages.Offers
 import com.example.earzikimarketplace.ui.view.pages.Profile
+import com.example.earzikimarketplace.ui.view.pages.addItem.CheckboxGrid
 import com.example.earzikimarketplace.ui.view.pages.login.LoginPage
 import com.example.earzikimarketplace.ui.view.pages.login.SignUpPage
 import com.example.earzikimarketplace.ui.view.pages.login.SplashScreen
@@ -88,9 +89,11 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
         }
         composable(NavigationRoute.AddItemStatusScreen.route) {
             AddItemStatusScreen(navController, addItemViewModel)
-            //addItemViewModel.resetAfterUpload()
         }
 
+        composable(NavigationRoute.CheckboxGrid.route) {
+            CheckboxGrid(navController, addItemViewModel)
+        }
 
         composable(NavigationRoute.ItemDetails.route) {
             ItemInfoPage(sharedViewModel, navController)
@@ -106,6 +109,8 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
         composable(NavigationRoute.Offers.route) {
             Offers(navController)
         }
+
+
 
         composable(
             route = NavigationRoute.Marketplace.route,

@@ -5,11 +5,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.data.model.dataClass.Listing
+import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,9 +27,24 @@ class AddItemViewModel() : ViewModel() {
 
     private val _addItemStatus = MutableStateFlow<AddItemStatus>(AddItemStatus.Idle)
     val addItemStatus: StateFlow<AddItemStatus> = _addItemStatus
-    fun resetAddItemStatus() {
-        _addItemStatus.value = AddItemStatus.Idle
+    //fun resetAddItemStatus() {
+    //    _addItemStatus.value = AddItemStatus.Idle
+    //}
+
+
+    val allTags = mutableStateListOf(*TagEnum.values())
+
+    // State for tracking selected tags
+    val selectedTags = mutableStateListOf<TagEnum>()
+
+    fun toggleTagSelection(tag: TagEnum) {
+        if (selectedTags.contains(tag)) {
+            selectedTags.remove(tag)
+        } else {
+            selectedTags.add(tag)
+        }
     }
+
 
 
     private val _selectedImageUris = MutableLiveData<List<Uri>>(emptyList())
@@ -45,8 +62,8 @@ class AddItemViewModel() : ViewModel() {
     fun resetAfterUpload() {
         // Clear the selected image URIs
         _selectedImageUris.value = emptyList()
-        //_addItemStatus.value = AddItemStatus.Idle
         temporaryListing = null
+        selectedTags.clear()
     }
 
 
@@ -90,7 +107,13 @@ class AddItemViewModel() : ViewModel() {
 
                 val updatedListing = temporaryListing?.copy(image_urls = imageUrls, user_id = UUID.fromString(userInfo.id))
                 Log.d("MarketplaceViewModel", "Adding item: $updatedListing")
-                updatedListing?.let { listingsDB.addItem(it) }
+                val listingID = updatedListing?.let { listingsDB.addItem(it) }
+
+                val testTags = listOf(TagEnum.BOOKS, TagEnum.TECHNOLOGY, TagEnum.DECORATIVES)
+                if (listingID != null) {
+                    listingsDB.attachTags(listingID, testTags)
+                }
+
 
                 _addItemStatus.value = AddItemStatus.Success
                 listener?.onItemAddedSuccess()

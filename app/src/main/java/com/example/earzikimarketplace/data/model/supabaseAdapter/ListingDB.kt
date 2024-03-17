@@ -2,6 +2,8 @@ package com.example.earzikimarketplace.data.model.supabaseAdapter
 
 import android.util.Log
 import com.example.earzikimarketplace.data.model.dataClass.Listing
+import com.example.earzikimarketplace.data.model.dataClass.TagAttachment
+import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.FilterOperator
@@ -9,6 +11,10 @@ import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.TextSearchType
 import io.github.jan.supabase.storage.storage
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import java.util.UUID
 
 class ListingsDB () {
     private val tableName = "Listings"
@@ -16,7 +22,6 @@ class ListingsDB () {
     /**
      * Gets a list of items within a category from the database
      */
-    // TODO: Only retrieve relevant data. Don't need to retrieve all columns like description (look at columns at getItemsByTagId)
     suspend fun getItems(
         start: Long,
         pageSize: Long,
@@ -172,15 +177,31 @@ class ListingsDB () {
     // Adds an item to the database
     suspend fun addItem(
         listing: Listing
-    ) {
+    ): UUID {
         val client = SupabaseManager.getClient()
         try {
             Log.d("Posting", listing.toString())
             client.postgrest[tableName].insert(listing)
             Log.d("supabase", "Added new item: $listing")
+            return listing.listing_id
         } catch (e: Exception) {
             Log.e("supabase", "Error adding new item: ${e.message}")
             throw e // Rethrow the exception back
+        }
+    }
+
+    suspend fun attachTags(listingID: UUID, tags: List<TagEnum>){
+        val client = SupabaseManager.getClient()
+        tags.forEach { tag ->
+            try {
+                // Create an instance of TagAttachment for each tag
+                val attachment = TagAttachment(listingID.toString(), tag.id)
+                // Insert the attachment into the database
+                client.postgrest["ListingTags"].insert(attachment)
+                Log.d("Supabase", "Attached tag ${tag.name} to listing $listingID")
+            } catch (e: Exception) {
+                Log.e("Supabase", "Error attaching tag ${tag.name} to listing: ${e.message}")
+            }
         }
     }
 

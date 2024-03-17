@@ -4,11 +4,19 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.earzikimarketplace.R
+import kotlinx.serialization.Serializable
 
 data class TagItem(
     val category: String,
     val icon: ImageVector
 )
+
+@Serializable
+data class TagAttachment(
+    val listing_id: String, // UUID serialized as String
+    val tag_id: Int
+)
+
 
 enum class TagEnum(val id: Int, @StringRes val titleId: Int, val icon: Int) {
     DECORATIVES(1,          R.string.decoratives, R.drawable.decoratives),
