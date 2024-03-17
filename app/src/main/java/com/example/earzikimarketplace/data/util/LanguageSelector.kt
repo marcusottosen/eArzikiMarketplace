@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.earzikimarketplace.R
+import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import java.util.Locale
 
 @Composable
 fun LanguageSelector(
+    sharedViewModel: SharedViewModel,
     currentLanguage: String,
     onLanguageSelected: (String) -> Unit
 ) {
@@ -34,7 +36,10 @@ fun LanguageSelector(
         supportedLanguages.forEach { language ->
             if (language != currentLanguage) {
                 Button(
-                    onClick = { onLanguageSelected(language) },
+                    onClick = {
+                        onLanguageSelected(language)
+                        sharedViewModel.updateLanguage()
+                              },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text(text = getLocalizedLanguageName(language))

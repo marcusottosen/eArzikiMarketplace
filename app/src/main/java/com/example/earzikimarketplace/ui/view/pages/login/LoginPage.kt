@@ -25,10 +25,11 @@ import com.example.earzikimarketplace.data.util.getCurrentLocale
 import com.example.earzikimarketplace.data.util.getLocalizedLanguageName
 import com.example.earzikimarketplace.data.util.setLocale
 import com.example.earzikimarketplace.ui.viewmodel.LoginViewModel
+import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(navController: NavController) {
+fun LoginPage(navController: NavController, sharedViewModel: SharedViewModel) {
     val context = LocalContext.current
     val viewModel: LoginViewModel = viewModel()
 
@@ -90,6 +91,7 @@ fun LoginPage(navController: NavController) {
 
         val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
         LanguageSelector(
+            sharedViewModel = sharedViewModel,
             currentLanguage = currentLanguage,
             onLanguageSelected = { newLanguage ->
                 // Handle language selection

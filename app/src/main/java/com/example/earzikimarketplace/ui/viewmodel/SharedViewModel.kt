@@ -1,9 +1,12 @@
 package com.example.earzikimarketplace.ui.viewmodel
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.graphics.ImageBitmap
@@ -23,6 +26,8 @@ import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
 import com.example.earzikimarketplace.data.util.ImageCache
+import com.example.earzikimarketplace.data.util.getCurrentLocale
+import com.example.earzikimarketplace.data.util.getLocalizedLanguageName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -30,9 +35,67 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import java.util.UUID
 
-class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel() {
+class SharedViewModel(
+    application: Application,
+    private val startActivity: (Intent) -> Unit,
+    //context: Context
+) : ViewModel() {
+    @SuppressLint("StaticFieldLeak")
+    private val context = application.applicationContext
+
+    private var textToSpeech: TextToSpeech? = null
+
+    init {
+        val initialLocale = getLanguageLocaleString()
+
+        textToSpeech = TextToSpeech(application.applicationContext) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                setTextToSpeechLanguage(initialLocale)
+            } else {
+                Log.e("TTS", "Initialization failed")
+            }
+        }
+    }
+    private fun setTextToSpeechLanguage(locale: Locale) {
+        Log.d("LOCALE LANGUAGE", locale.toString())
+        val result = textToSpeech?.setLanguage(locale)
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            Log.e("TTS", "Language not supported: $locale")
+            textToSpeech?.setLanguage(Locale.FRENCH)    // Defaulting to french if language is not supported (Hausa is not)
+        }
+    }
+
+    fun speak(text: String) {
+        textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    override fun onCleared() {
+        textToSpeech?.stop()
+        textToSpeech?.shutdown()
+        super.onCleared()
+    }
+
+    private fun getLanguageLocaleString(): Locale {
+        val currentLocale = getCurrentLocale(context).removeSurrounding("[", "]")
+        val localeParts = currentLocale.split("-")
+        val newLocale = if (localeParts.size > 1) {
+            Locale(localeParts[0], localeParts[1]) // Use language and country constructor
+        } else {
+            Locale(currentLocale) // Use single language code constructor
+        }
+        return newLocale
+    }
+
+    fun updateLanguage() {
+        val newLocale = getLanguageLocaleString()
+        setTextToSpeechLanguage(newLocale)
+    }
+
+
+
     private val listingsDB = ListingsDB()
 
     private val _listing = MutableLiveData<Listing>()
@@ -192,22 +255,23 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
 
 
 
-
-
     // Used for intent needed for WhatsApp API
     companion object {
         fun provideFactory(
+            context: Context,
+            application: Application, // Add this parameter
             startActivity: (Intent) -> Unit
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
-                    return SharedViewModel(startActivity) as T
+                    return SharedViewModel(application, startActivity) as T // Pass application here
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
     }
+
 
 }
 

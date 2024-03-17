@@ -11,6 +11,7 @@ import android.os.LocaleList
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,9 +60,11 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     // Provide the startActivity lambda to the SharedViewModel
-                    val sharedViewModel: SharedViewModel = viewModel(
-                        factory = SharedViewModel.provideFactory(startActivity)
-                    )
+                    val sharedViewModel: SharedViewModel by viewModels {
+                        SharedViewModel.provideFactory(context, application, startActivity = { intent ->
+                            startActivity(intent)
+                        })
+                    }
                     val apiKey = context.getString(R.string.API_TOKEN)
                     val apiUrl = context.getString(R.string.API_URL)
                     SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client

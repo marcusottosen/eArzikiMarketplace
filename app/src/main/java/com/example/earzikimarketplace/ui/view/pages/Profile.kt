@@ -55,6 +55,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
             val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
 
             LanguageSelector(
+                sharedViewModel = sharedViewModel,
                 currentLanguage = currentLanguage,
                 onLanguageSelected = { newLanguage ->
                     // Handle language selection here

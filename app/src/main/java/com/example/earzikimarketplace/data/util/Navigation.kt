@@ -68,7 +68,7 @@ fun Navigation(navController: NavHostController, sharedViewModel: SharedViewMode
             SignUpPage(navController)
         }
         composable(NavigationRoute.Login.route) {
-            LoginPage(navController = navController)
+            LoginPage(navController = navController, sharedViewModel = sharedViewModel)
         }
 
         composable(NavigationRoute.SplashScreen.route) {

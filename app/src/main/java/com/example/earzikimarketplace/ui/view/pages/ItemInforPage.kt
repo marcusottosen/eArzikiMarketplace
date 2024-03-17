@@ -1,6 +1,5 @@
 package com.example.earzikimarketplace.ui.view.pages
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -47,16 +46,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.data.util.formatDayMonth
 import com.example.earzikimarketplace.data.util.formatHourMinute
 import com.example.earzikimarketplace.data.util.formatYear
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -65,8 +61,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.ui.view.reuseables.FullScreenImageDialog
@@ -288,31 +282,50 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                         text = item.title,
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    //Text(
-                    //    // Category/tags
-                    //    text = "category ID: ${item.category_id}",
-                    //    style = MaterialTheme.typography.labelMedium,
-                    //)
 
 
-                    Text( // Posted date
-                        text = "${stringResource(id = R.string.posted)} ${item.post_date?.let { formatDayMonth(it) }}/${
-                            item.post_date?.let {
-                                formatYear(
-                                    it
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(0.8f) // 80% space texts
+                        ) {
+                            Text( // Posted date
+                                text = "${stringResource(id = R.string.posted)} ${item.post_date?.let { formatDayMonth(it) }}/${
+                                    item.post_date?.let {
+                                        formatYear(it)
+                                    }
+                                } - ${item.post_date?.let { formatHourMinute(it) }}",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text( // Location
+                                text = if (locationResult?.isSuccess == true)
+                                    locationResult?.getOrNull()?.city.toString() + ", " + locationResult?.getOrNull()?.address.toString()
+                                else
+                                    "",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        Box(
+                            modifier = Modifier.weight(0.2f) // 20% space icon
+                        ) {
+                            IconButton(
+                                onClick = { sharedViewModel.speak(item.title + ". " + item.description) },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.speaker),
+                                    contentDescription = "Read Aloud",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
-                        } - ${item.post_date?.let { formatHourMinute(it) }}",
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(top = 26.dp)
-                    )
-                    Text( // location
-                        text = if (locationResult?.isSuccess == true)
-                            locationResult?.getOrNull()?.city.toString() + ", " + locationResult?.getOrNull()?.address.toString()
-                        else
-                            "",
-                        style = MaterialTheme.typography.labelMedium,
-                    )
+                        }
+                    }
 
 
                     Text( // Description
