@@ -98,5 +98,6 @@
     <string name="please_pick_at_least_one_tag">Da fatan za a zabi aƙalla alama ɗaya</string>
     <string name="whatsapp_text">Sannu, Ina sha\'awar %1$s da ka jera a Kasuwar eArziki. \nShin har yanzu yana nan?</string>
     <string name="sms_text">Sannu, Ina sha\'awar %1$s da ka jera a Kasuwar eArziki. \nShin har yanzu yana nan?</string>
+    <string name="wrong_email_or_password">Imel ko kalmar sirri ba daidai ba ne!</string>
 
 </resources>

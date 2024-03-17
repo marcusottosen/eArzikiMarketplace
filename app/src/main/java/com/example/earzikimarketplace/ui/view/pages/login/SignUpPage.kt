@@ -32,14 +32,14 @@ fun SignUpPage(navController: NavController) {
     val context = LocalContext.current
 
 
-    var email by remember { mutableStateOf("myEmail@gmail.com") }
-    var password by remember { mutableStateOf("Marcus123") }
-    var confirmPassword by remember { mutableStateOf("Marcus123") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
-    var firstName by remember { mutableStateOf("John") }
-    var surname by remember { mutableStateOf("Doe") }
-    var phoneNumber by remember { mutableStateOf("12345678") }
-    var age by remember { mutableStateOf("20") }
+    var firstName by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
 
     var errorMessage by remember { mutableStateOf<Int?>(null) }
 

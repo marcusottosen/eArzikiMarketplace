@@ -98,5 +98,6 @@
     <string name="please_pick_at_least_one_tag">Veuillez sélectionner au moins une étiquette</string>
     <string name="whatsapp_text">Bonjour, je suis intéressé(e) par le %1$s que vous avez annoncé sur le Marketplace eArziki. \nEst-il toujours disponible ?</string>
     <string name="sms_text">Bonjour, je suis intéressé(e) par le %1$s que vous avez annoncé sur le Marketplace eArziki. \nEst-il toujours disponible ?</string>
+    <string name="wrong_email_or_password">Adresse e-mail ou mot de passe incorrect !</string>
 
 </resources>

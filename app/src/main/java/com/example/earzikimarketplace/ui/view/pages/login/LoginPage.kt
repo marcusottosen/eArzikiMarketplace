@@ -34,8 +34,8 @@ fun LoginPage(navController: NavController) {
 
 
 
-    var email by remember { mutableStateOf(TextFieldValue("mkottosehhn@gmail.com")) }
-    var password by remember { mutableStateOf(TextFieldValue("Marcus123")) }
+    var email by remember { mutableStateOf(TextFieldValue("testEmail@gmail.com")) }
+    var password by remember { mutableStateOf(TextFieldValue("Test123!")) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Column(
@@ -111,10 +111,12 @@ fun LoginPage(navController: NavController) {
             viewModel.resetLoginState()
         }
         is LoginViewModel.LoginState.Error -> {
-            Text(text = stringResource(R.string.error))
-            var errorMessage = (loginState as LoginViewModel.LoginState.Error).message
+            val errorMessage = (loginState as LoginViewModel.LoginState.Error).message
             // Handle login error
-            errorMessage = errorMessage
+            if (errorMessage.contains("Invalid login credentials") )
+                Text(stringResource(R.string.wrong_email_or_password))
+            else
+                Text(text = stringResource(R.string.error))
         }
         else -> {
         }

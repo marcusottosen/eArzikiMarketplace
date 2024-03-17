@@ -13,6 +13,7 @@ import com.example.earzikimarketplace.data.model.supabaseAdapter.storeUserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class LoginViewModel() : ViewModel() {
     //val supabaseAdapter = SupabaseAdapter()
@@ -37,12 +38,12 @@ class LoginViewModel() : ViewModel() {
 
         val repository = UserRepository()
 
-        val userData = UserSignUp(  // TODO: Get correct data from user
+        val userData = UserSignUp(
             user_id = null,
             email = email,
             firstname = firstname,
             surname = surname,
-            location_id = null,
+            location_id = UUID.fromString("4e54d6f1-26cf-43f6-9b8a-69e0ac2db74b"),
             profile_picture = null,
             phone_number = number,
             age = age,

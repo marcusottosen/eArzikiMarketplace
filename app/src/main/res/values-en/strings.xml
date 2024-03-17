@@ -97,6 +97,7 @@
     <string name="please_pick_at_least_one_tag">Please pick at least one tag</string>
     <string name="whatsapp_text">Hello, I\'m interested in the %1$s you listed on eArziki Marketplace. \nIt it still available?</string>
     <string name="sms_text">Hello, I\'m interested in the %1$s you listed on eArziki Marketplace. \nIt it still available?</string>
+    <string name="wrong_email_or_password">Wrong email or password!</string>
 
 </resources>
 
