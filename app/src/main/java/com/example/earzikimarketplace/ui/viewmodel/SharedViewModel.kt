@@ -125,12 +125,12 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
     }
 
     // Used on product page. Gets all images for item
-    fun fetchItemImages(urls: List<String>) {
+    fun fetchItemImages(urls: List<String>, context: Context) {
         viewModelScope.launch {
             val images = urls.mapNotNull { url ->
                 async {
                     ImageCache.get(url) ?: try {
-                        val bytes = listingsDB.getItemImage(url)
+                        val bytes = listingsDB.getItemImage(context, url)
                         BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()?.also { bitmap ->
                             ImageCache.put(url, bitmap)
                         }
@@ -147,9 +147,9 @@ class SharedViewModel(private val startActivity: (Intent) -> Unit) : ViewModel()
 
 
     // Used on each card in the marketplace. Retrieves only the first image.
-    suspend fun fetchImageBitmap(url: String): ImageBitmap? = withContext(Dispatchers.IO) {
+    suspend fun fetchImageBitmap(url: String, context: Context): ImageBitmap? = withContext(Dispatchers.IO) {
         try {
-            val bytes = listingsDB.getItemImage(url) // Runs off the main thread
+            val bytes = listingsDB.getItemImage(context, url) // Runs off the main thread
 
             // Decode image dimensions
             val options = BitmapFactory.Options().apply {

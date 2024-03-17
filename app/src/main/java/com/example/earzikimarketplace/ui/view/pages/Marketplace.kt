@@ -124,7 +124,7 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
             val categoryTitle = categoryEnum?.getTitle(context) ?: stringResource(R.string.unknown_category)
             MarketPageTop(navController, categoryTitle, viewModel, pageCategoryID, onTagClicked)
         }
-    ) {paddingValues ->
+    ) { paddingValues ->
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
@@ -189,16 +189,20 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                     }
                 }
 
-
                 Spacer(modifier = Modifier.height(15.dp))
 
-                when (uiState) {
-                    UiState.LOADING -> Text(stringResource(R.string.loading))
-                    UiState.EMPTY -> Text(stringResource(R.string.no_items_found))
-                    UiState.CONTENT -> LazyVerticalGrid(
+                if (uiState == UiState.LOADING && items.isEmpty()) {
+                    // Initial loading state when no items have been loaded yet
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize() // Fill the size of the parent
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp)) // Apply a size to the CircularProgressIndicator
+                    }
+                } else {
+                    LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(bottom = 100.dp)
-
                     ) {
                         itemsIndexed(items) { index, item ->
                             if (index == items.lastIndex && !isPaginating) {
@@ -212,20 +216,23 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                                 index = index
                             )
                         }
-                        if (isPaginating) {
-                            item {
-                                CircularProgressIndicator()
+                        item {
+                            // Show the loading spinner at the bottom if more items are being loaded
+                            if (isPaginating) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize() // Fill the size of the parent
+                                ) {
+                                    CircularProgressIndicator(modifier = Modifier.size(20.dp)) // Apply a size to the CircularProgressIndicator
+                                }
                             }
                         }
-
                     }
-
-                    null -> Text(stringResource(R.string.initializing))
-                }
-                if (uiState == UiState.LOADING) {
-                    CircularProgressIndicator()
                 }
 
+                if (uiState == UiState.EMPTY) {
+                    Text(stringResource(R.string.no_items_found))
+                }
 
             }
         }

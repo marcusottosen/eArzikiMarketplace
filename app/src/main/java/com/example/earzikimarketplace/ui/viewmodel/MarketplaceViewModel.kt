@@ -67,6 +67,8 @@ class MarketplaceViewModel() : ViewModel() {
     }
 
     fun checkAndFetchNextPage(pageCategoryId: Int) {
+        Log.d("MarketplaceViewmodel", "checkAndFetchNextPage")
+
         if ((items.value?.size
                 ?: 0) >= _currentPage.value!! * pageSize && !_isLoading.value!! && !_allItemsLoaded.value!!
         ) {
@@ -76,6 +78,7 @@ class MarketplaceViewModel() : ViewModel() {
 
     // Call this method when tag or sorting changes
     fun onTagOrSortingSelected(categoryId: Int, tag: Int?) {
+        Log.d("MarketplaceViewmodel", "onTagOrSortingSelected")
         _uiState.value = UiState.LOADING
         clearItems()
         fetchNextPage(categoryId, tag)
@@ -136,7 +139,7 @@ class MarketplaceViewModel() : ViewModel() {
                     _currentPage.value = currentPage + 1
                 }
                 _uiState.value = if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
-                updateUiState()
+                //updateUiState()
 
 
             } catch (e: Exception) {

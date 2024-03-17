@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,7 +43,7 @@ import kotlinx.serialization.json.Json
 
 @Composable
 fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: NavController, modifier: Modifier, index: Int) {
-    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     // Local state for storing the image bitmap
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
@@ -60,7 +61,7 @@ fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: 
                 imageBitmap = cachedImage
             } else {
                 // If not in the cache, load the image
-                imageBitmap = sharedViewModel.fetchImageBitmap(firstImageUrl)?.also { bitmap ->
+                imageBitmap = sharedViewModel.fetchImageBitmap(firstImageUrl, context)?.also { bitmap ->
                     // Store the loaded image in the cache
                     ImageCache.put(firstImageUrl, bitmap)
                 }

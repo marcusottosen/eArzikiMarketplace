@@ -1,6 +1,11 @@
 package com.example.earzikimarketplace.data.model.supabaseAdapter
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.TagAttachment
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
@@ -14,6 +19,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
+import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 class ListingsDB () {
@@ -152,10 +158,24 @@ class ListingsDB () {
         }
     }
 
-    suspend fun getItemImage(url: String): ByteArray {
+    @SuppressLint("ResourceType")
+    suspend fun getItemImage(context: Context, url: String): ByteArray {
         val client = SupabaseManager.getClient()
         val bucket = client.storage["itemimages"]
-        return bucket.downloadAuthenticated(url)
+        return try {
+            // Download the image from db
+            bucket.downloadAuthenticated(url)
+        } catch (e: Exception) {
+            // If fails, use the placeholder
+            context.resources.openRawResource(R.drawable.placeholder).use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)?.let { bitmap ->
+                    ByteArrayOutputStream().use { stream ->
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        stream.toByteArray()
+                    }
+                } ?: throw RuntimeException("Failed to decode placeholder image.")
+            }
+        }
     }
 
 

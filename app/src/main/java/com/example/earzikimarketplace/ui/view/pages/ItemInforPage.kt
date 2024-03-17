@@ -79,6 +79,7 @@ import kotlinx.coroutines.launch
 fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController) {
     val userResult by sharedViewModel.userResult.collectAsState()
     val locationResult by sharedViewModel.locationResult.collectAsState()
+    val context = LocalContext.current
 
     val itemState = sharedViewModel.listing.observeAsState()
     itemState.value?.user_id?.let { userId ->
@@ -90,7 +91,7 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
     val imagesData by sharedViewModel.imagesData.collectAsState()
     itemState.value?.let { item ->
         LaunchedEffect(item.image_urls) {
-            item.image_urls?.let { sharedViewModel.fetchItemImages(it) }
+            item.image_urls?.let { sharedViewModel.fetchItemImages(it, context) }
         }
     }
 
