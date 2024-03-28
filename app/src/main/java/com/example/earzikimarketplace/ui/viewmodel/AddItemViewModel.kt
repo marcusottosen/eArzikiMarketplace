@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.earzikimarketplace.R
+import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
@@ -21,21 +23,28 @@ import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 class AddItemViewModel() : ViewModel() {
-    private val _items = MutableLiveData<List<Listing>>() //actual list of all items
+    //private val _items = MutableLiveData<List<Listing>>() //actual list of all items
     private val listingsDB = ListingsDB()
     var listener: MarketplaceViewModel.MarketplaceListener? = null   // Listener property
 
     private val _addItemStatus = MutableStateFlow<AddItemStatus>(AddItemStatus.Idle)
     val addItemStatus: StateFlow<AddItemStatus> = _addItemStatus
-    //fun resetAddItemStatus() {
-    //    _addItemStatus.value = AddItemStatus.Idle
-    //}
 
+
+    // Stores the listing until images has been added too.
+    private var temporaryListing: Listing? = null
 
     val allTags = mutableStateListOf(*TagEnum.values())
 
     // State for tracking selected tags
     val selectedTags = mutableStateListOf<TagEnum>()
+
+    sealed class AddItemStatus {
+        object Idle : AddItemStatus()
+        object Loading : AddItemStatus()
+        object Success : AddItemStatus()
+        class Error(val message: String) : AddItemStatus()
+    }
 
     fun toggleTagSelection(tag: TagEnum) {
         if (selectedTags.contains(tag)) {
@@ -44,8 +53,6 @@ class AddItemViewModel() : ViewModel() {
             selectedTags.add(tag)
         }
     }
-
-
 
     private val _selectedImageUris = MutableLiveData<List<Uri>>(emptyList())
     val selectedImageUris: LiveData<List<Uri>> get() = _selectedImageUris
@@ -59,13 +66,12 @@ class AddItemViewModel() : ViewModel() {
         }
     }
 
-    fun resetAfterUpload() {
-        // Clear the selected image URIs
+    // Clears all temporary info, so that new items can be added
+    private fun resetAfterUpload() {
         _selectedImageUris.value = emptyList()
         temporaryListing = null
         selectedTags.clear()
     }
-
 
     // Handles if the user removes a picked image
     fun removeSelectedImageUri(index: Int) {
@@ -76,21 +82,33 @@ class AddItemViewModel() : ViewModel() {
         }
     }
 
+    fun checkAndAddListing(context: Context, title: String, description: String, price: String, categoryId: CategoryEnum?, imageUrls: List<String>) {
+        if (title.isBlank() || description.isBlank() || price.isBlank() || categoryId == null) {
+            val errorMessage = context.getString(R.string.please_fill_all_fields)
+            listener?.onError(errorMessage)
+            return
+        }
 
+        val priceFloat = price.toFloatOrNull()
+        if (priceFloat == null) {
+            val errorMessage = context.getString(R.string.invalid_price)
+            listener?.onError(errorMessage)
+            return
+        }
 
-    // Stores the listing until images has been added too.
-    var temporaryListing: Listing? = null
-    fun prepareListing(listing: Listing) {
+        val listing = Listing(
+            title = title,
+            description = description,
+            price = priceFloat,
+            category_id = categoryId.id,
+            image_urls = imageUrls
+        )
         Log.d("AddItemViewModel", "Preparing listing: $listing")
+        Log.d("AddItemViewMdoel status", _addItemStatus.value.toString())
         temporaryListing = listing
+        listener?.onValidationSuccess() // Notify UI to nav to image upload screen
     }
 
-    sealed class AddItemStatus {
-        object Idle : AddItemStatus()
-        object Loading : AddItemStatus()
-        object Success : AddItemStatus()
-        class Error(val message: String) : AddItemStatus()
-    }
 
     fun uploadImagesAndAddItem(context: Context) {
         Log.d("AddItemViewModel", "uploadImagesAndAddItem: $temporaryListing")
@@ -113,7 +131,6 @@ class AddItemViewModel() : ViewModel() {
                     listingsDB.attachTags(listingID, selectedTags)
                 }
 
-
                 _addItemStatus.value = AddItemStatus.Success
                 listener?.onItemAddedSuccess()
                 resetAfterUpload()
@@ -124,7 +141,6 @@ class AddItemViewModel() : ViewModel() {
             }
         }
     }
-
 
     // Function to convert Uri to ByteArray
     // Bitmap compresses file size significantly (ex. 1.35MB -> 300KB)

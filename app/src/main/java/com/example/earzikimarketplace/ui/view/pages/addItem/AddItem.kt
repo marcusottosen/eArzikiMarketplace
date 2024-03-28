@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
-import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.PageTop
 import com.example.earzikimarketplace.ui.viewmodel.AddItemViewModel
@@ -40,21 +39,30 @@ import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
 @Composable
 fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
     val context = LocalContext.current
-    //val viewModel: MarketplaceViewModel = viewModel()
-    //val addItemStatus by viewModel.addItemStatus.collectAsState()
 
 
+    DisposableEffect(key1 = viewModel) {
+        val listener = object : MarketplaceViewModel.MarketplaceListener {
+            override fun onValidationSuccess() {
+                navController.navigate(NavigationRoute.AddItemImagePicker.route) // Adjust the route as needed
+            }
 
-    // Toast manager
-    viewModel.listener = object : MarketplaceViewModel.MarketplaceListener {
-        override fun onItemAddedSuccess() {
-            //Toast.makeText(context, "Item added successfully!", Toast.LENGTH_SHORT).show()
+            override fun onItemAddedSuccess() {
+                // Empty
+            }
+
+            override fun onError(message: String) {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
         }
 
-        override fun onError(message: String) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        viewModel.listener = listener
+
+        onDispose {
+            viewModel.listener = null
         }
     }
+
 
     val titleState = remember { mutableStateOf("") }
     val descriptionState = remember { mutableStateOf("replace") }
@@ -170,33 +178,41 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
 
             Button(
                 onClick = {
-                    if (titleState.value.isBlank() || descriptionState.value.isBlank() || priceState.value.isBlank() || categoryState.value == null) {
-                        Toast.makeText(context,
-                            R.string.please_fill_all_fields, Toast.LENGTH_SHORT)
-                            .show()
-                        return@Button
-                    }
-
-                    // Convert price to float
-                    val price = priceState.value.toFloatOrNull()
-                    if (price == null) {
-                        Toast.makeText(context,
-                            R.string.invalid_price, Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-
-                    viewModel.prepareListing(
-                        Listing(
-                            title = titleState.value,
-                            description = descriptionState.value,
-                            price = price,
-                            category_id = categoryState.value!!.id,
-                            image_urls = imageUrlsState.value
-                        )
+                    viewModel.checkAndAddListing(
+                        context = context,
+                        title = titleState.value,
+                        description = descriptionState.value,
+                        price = priceState.value,
+                        categoryId = categoryState.value,
+                        imageUrls = imageUrlsState.value
                     )
-                    //viewModel.addItem(newListing)
-                    navController.navigate(NavigationRoute.CheckboxGrid.route)
-                    //navController.navigate(NavigationRoute.AddItemImagePicker.route)
+               //    if (titleState.value.isBlank() || descriptionState.value.isBlank() || priceState.value.isBlank() || categoryState.value == null) {
+               //        Toast.makeText(context,
+               //            R.string.please_fill_all_fields, Toast.LENGTH_SHORT)
+               //            .show()
+               //        return@Button
+               //    }
+
+               //    // Convert price to float
+               //    val price = priceState.value.toFloatOrNull()
+               //    if (price == null) {
+               //        Toast.makeText(context,
+               //            R.string.invalid_price, Toast.LENGTH_SHORT).show()
+               //        return@Button
+               //    }
+
+               //    viewModel.prepareListing(
+               //        Listing(
+               //            title = titleState.value,
+               //            description = descriptionState.value,
+               //            price = price,
+               //            category_id = categoryState.value!!.id,
+               //            image_urls = imageUrlsState.value
+               //        )
+               //    )
+               //    //viewModel.addItem(newListing)
+               //    navController.navigate(NavigationRoute.CheckboxGrid.route)
+               //    //navController.navigate(NavigationRoute.AddItemImagePicker.route)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

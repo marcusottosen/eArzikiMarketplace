@@ -18,7 +18,8 @@ class MarketplaceViewModel() : ViewModel() {
     private val _items = MutableLiveData<List<Listing>>() //actual list of all items
     private val listingsDB = ListingsDB()
 
-    interface MarketplaceListener { // Used to display toast in the UI
+    interface MarketplaceListener { // Used for the UI to observe the ViewModel and react from it.
+        fun onValidationSuccess()
         fun onItemAddedSuccess()
         fun onError(message: String)
     }

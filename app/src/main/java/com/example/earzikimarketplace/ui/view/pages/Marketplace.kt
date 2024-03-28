@@ -1,6 +1,5 @@
 package com.example.earzikimarketplace.ui.view.pages
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -109,10 +108,15 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
     }
     // Show toast when adding new item
     viewModel.listener = object : MarketplaceViewModel.MarketplaceListener {
+        override fun onValidationSuccess() {
+            // Empty
+        }
+
         override fun onItemAddedSuccess() {
             Toast.makeText(context,
                 context.getString(R.string.item_added_successfully), Toast.LENGTH_SHORT).show()
         }
+
         override fun onError(message: String) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
