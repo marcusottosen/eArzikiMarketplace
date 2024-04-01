@@ -10,7 +10,7 @@ android {
     namespace 'com.example.earzikimarketplace'
 
     compileSdk 33
-
+    buildFeatures.buildConfig = true
     defaultConfig {
         applicationId "com.example.earzikimarketplace"
         minSdk 23
@@ -30,9 +30,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField 'String', "ApiKey", eArziki_APIKEY
+            resValue 'string', "api_key", eArziki_APIKEY
+            buildConfigField 'String', "ApiUrl", eArziki_URL
+            resValue 'string', "api_url", eArziki_URL
+        }
         release {
             minifyEnabled true
             proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
+            buildConfigField 'String', "ApiKey", eArziki_APIKEY
+            resValue 'string', "api_key", eArziki_APIKEY
+            buildConfigField 'String', "ApiUrl", eArziki_URL
+            resValue 'string', "api_url", eArziki_URL
         }
     }
 

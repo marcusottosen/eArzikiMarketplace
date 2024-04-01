@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.earzikimarketplace.BuildConfig
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
@@ -101,8 +102,9 @@ class LoginViewModel() : ViewModel() {
     val loginState: StateFlow<LoginState> = _loginState
 
     fun login(email: String, password: String, context: Context) {
-        val apiKey = context.getString(R.string.API_TOKEN)
-        val apiUrl = context.getString(R.string.API_URL)
+        val apiUrl: String = BuildConfig.ApiUrl;
+        val apiKey: String = BuildConfig.ApiKey;
+
 
         SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
 

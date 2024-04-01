@@ -41,7 +41,6 @@ import java.util.UUID
 class SharedViewModel(
     application: Application,
     private val startActivity: (Intent) -> Unit,
-    //context: Context
 ) : ViewModel() {
     @SuppressLint("StaticFieldLeak")
     private val context = application.applicationContext
@@ -216,13 +215,13 @@ class SharedViewModel(
 
             // Decode image dimensions
             val options = BitmapFactory.Options().apply {
-                inJustDecodeBounds = true
+                inJustDecodeBounds = true // Only decode image size, not the whole image, to avoid memory allocation
             }
-            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options) // Find image dimensions
 
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, 150, 150)
-            options.inJustDecodeBounds = false
+            // Calculate the inSampleSize value to decode the image to a smaller version to save memory
+            options.inSampleSize = calculateInSampleSize(options, 150, 150) // Calculate optimal inSampleSize value
+            options.inJustDecodeBounds = false // Now settings to decode the full bitmap.
 
             // Decode bitmap with inSampleSize set
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)?.asImageBitmap()

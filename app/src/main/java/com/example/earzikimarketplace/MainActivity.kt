@@ -65,8 +65,10 @@ class MainActivity : ComponentActivity() {
                             startActivity(intent)
                         })
                     }
-                    val apiKey = context.getString(R.string.API_TOKEN)
-                    val apiUrl = context.getString(R.string.API_URL)
+
+                    val apiKey: String = BuildConfig.ApiKey;
+                    val apiUrl: String = BuildConfig.ApiUrl;
+
                     SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
 
                     val navBackStackEntry by navController.currentBackStackEntryAsState()

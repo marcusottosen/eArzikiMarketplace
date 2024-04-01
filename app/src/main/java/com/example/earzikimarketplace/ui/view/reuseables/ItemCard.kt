@@ -67,7 +67,7 @@ fun ItemCard(listing: Listing, sharedViewModel: SharedViewModel, navController: 
                 }
             }
         } else {
-            imageBitmap = null // Optionally, set a default placeholder here
+            imageBitmap = null
         }
     }
 
