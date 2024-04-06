@@ -56,10 +56,12 @@ import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.model.dataClass.UiState
+import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import com.example.earzikimarketplace.ui.view.reuseables.FilterDropdown
 import com.example.earzikimarketplace.ui.view.reuseables.ItemCard
 import com.example.earzikimarketplace.ui.view.reuseables.SearchBar
 import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
+import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModelFactory
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 
@@ -67,7 +69,11 @@ import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 @Composable
 fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavController, pageCategoryID: Int) {
     val context = LocalContext.current
-    val viewModel: MarketplaceViewModel = viewModel()
+    val listingsDB = ListingsDB()
+    val factory = MarketplaceViewModelFactory(listingsDB)
+    val viewModel: MarketplaceViewModel = viewModel(factory = factory)
+
+    //val viewModel: MarketplaceViewModel = viewModel()
 
     // States and items
     val items by viewModel.items.observeAsState(initial = emptyList())

@@ -26,7 +26,7 @@ class ListingsDB () {
     private val tableName = "Listings"
 
     /**
-     * Gets a list of items within a category from the database
+     * Gets a list of items within a category from the database working with tags too
      */
     suspend fun getItems(
         start: Long,
@@ -74,81 +74,18 @@ class ListingsDB () {
         }
     }
 
-    /**
-     * Gets a list of items within a category with a specific tag from the database
-     */
-   /* suspend fun getItemsByTagId(
-        start: Long,
-        pageSize: Long,
-        category: Int,
-        tagId: Int
-    ): Result<List<Listing>> {
-
-        return try {
-            val client = SupabaseManager.getClient()
-
-            val columns = Columns.raw("*, ListingTags!inner(tag_id)")
-            Log.d("supabase ListingDB", "category: $category")
-            Log.d("supabase ListingDB", "TagId: $tagId")
-
-
-            val response = client.postgrest["Listings"].select(columns = columns) {
-                range(start until start + pageSize)
-                order("post_date", Order.DESCENDING)  // Newest items first
-                eq("active", "TRUE")
-                eq("category_id", category)
-                filter(column = "ListingTags.tag_id", operator = FilterOperator.EQ, value = tagId)
-            }
-
-            // Decode the response into a list of Listing objects
-            val data = response.decodeList<Listing>()
-            Log.d("supabase data", "Items: $data")
-
-            Result.success(data)
-        } catch (e: Exception) {
-            // Log the error and return a failure result
-            Log.e("supabase", "Error getting items by tag_id: ${e.message}")
-            Result.failure(e)
-        }
-    }*/
-
-
 
     suspend fun searchListingsByTitle(
-        //start: Long,
-        //pageSize: Long,
-        //category: Int,
         searchQuery: String
     ): Result<List<Listing>> {
         return try {
             val client = SupabaseManager.getClient()
             Log.d("supabase", "searchListingsByTitle: $searchQuery")
-
-            /*val formattedQuery = searchQuery.split(" ").joinToString(" & ") // Format the query for full-text search
-
-
-            val response = client.postgrest[tableName].select {
-                eq("active", "TRUE")
-                eq("category_id", category)
-                filter("title", FilterOperator.FTS, "title")
-
-                range(start until start + pageSize)
-                order("post_date", Order.DESCENDING)  // Newest items first
-            }*/
-
             val response = client.postgrest["users"].select {
                 textSearch(column = "firstname", query = "my", textSearchType = TextSearchType.PLAINTO)
             }
 
-            val response2 = client.postgrest["users"].select(columns = Columns.list("email")) {
-                textSearch(column = "email", query = "'email'", config = "english", textSearchType = TextSearchType.WEBSEARCH)
-            }
             Log.d("supabase", "response: $response")
-
-            //val response = client.postgrest["Listings"].select(columns = Columns.list("title")) {
-            //    textSearch(column = "title", query = "title", config = "english", textSearchType = TextSearchType.PLAINTO)
-            //}
-
             val data = response.decodeList<Listing>()
             Log.d("supabase", "Data: $data")
             Result.success(data)
@@ -180,9 +117,7 @@ class ListingsDB () {
 
 
 
-//             val columns = Columns.raw("*, ListingTags!inner(tag_id)")
 
-    // Gets the amount of items in a category
     /**
      * Gets the amount of items in a category by retrieving "active" column for the specific category and counting them.
      */
@@ -199,7 +134,6 @@ class ListingsDB () {
                 eq("category_id", category)
             }
             //Log.d("supabaseDEBUG reseponse", "response: $response")
-            ///val data = response.decodeList<Listing>()
             val data = response.decodeList<ActiveRecord>()
 
             //Log.d("supabaseDEBUG size", "size: ${data.size}")

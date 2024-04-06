@@ -10,4 +10,8 @@ object ImageCache {
     }
 
     fun get(url: String): ImageBitmap? = cache[url]
+
+    fun clear() {
+        cache.clear()
+    }
 }

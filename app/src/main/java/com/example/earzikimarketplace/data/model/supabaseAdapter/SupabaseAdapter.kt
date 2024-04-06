@@ -90,7 +90,6 @@ object SupabaseManager {
             throw SessionRetrievalException("Failed to refresh session", e)
         }
     }
-    // TODO: Storing session token at UserRepository. Is it needed?
 }
 class InitializationException(message: String, cause: Throwable? = null) : Exception(message, cause)
 class SupabaseClientNotInitializedException(message: String) : IllegalStateException(message)

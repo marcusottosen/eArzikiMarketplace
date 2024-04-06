@@ -32,8 +32,6 @@ import com.example.earzikimarketplace.ui.view.reuseables.PageTop
 import com.example.earzikimarketplace.ui.viewmodel.AddItemViewModel
 import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
 
-
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +42,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
     DisposableEffect(key1 = viewModel) {
         val listener = object : MarketplaceViewModel.MarketplaceListener {
             override fun onValidationSuccess() {
-                navController.navigate(NavigationRoute.AddItemImagePicker.route) // Adjust the route as needed
+                navController.navigate(NavigationRoute.AddItemImagePicker.route)
             }
 
             override fun onItemAddedSuccess() {
@@ -107,7 +105,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                     maxLines = 7,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 200.dp)  // Set a minimum height
+                        .heightIn(min = 200.dp)
                         .padding(bottom = 16.dp)
                 )
 
@@ -216,10 +214,10 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .fillMaxWidth(0.8f) // 80% of the screen width
-                    .widthIn(max = 800.dp) // max width for large screens/tablets
+                    .fillMaxWidth(0.8f)
+                    .widthIn(max = 800.dp)
                     .padding(16.dp).padding(bottom = 100.dp),
-                shape = RoundedCornerShape(8.dp) // more squared corners
+                shape = RoundedCornerShape(8.dp) // squared corners
             ) {
                 Text(stringResource(R.string.next))
             }

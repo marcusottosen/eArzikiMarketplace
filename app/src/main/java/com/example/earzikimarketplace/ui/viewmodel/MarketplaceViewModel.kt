@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.SortOption
@@ -13,10 +14,10 @@ import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import kotlinx.coroutines.launch
 
 
-class MarketplaceViewModel() : ViewModel() {
+class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
 
     private val _items = MutableLiveData<List<Listing>>() //actual list of all items
-    private val listingsDB = ListingsDB()
+    //private val listingsDB = ListingsDB()
 
     interface MarketplaceListener { // Used for the UI to observe the ViewModel and react from it.
         fun onValidationSuccess()
@@ -112,21 +113,6 @@ class MarketplaceViewModel() : ViewModel() {
                         priceAscending = priceAscending
 
                     )
-                /*val result = if (tag == null) { // If no tag picked, get all items in category
-                    listingsDB.getItems(
-                        start,
-                        pageSize,
-                        category,
-                        tag
-                    )
-                } else {
-                    listingsDB.getItemsByTagId( //If tag picked, get items with that tag in category
-                        start,
-                        pageSize,
-                        category,
-                        tag,
-                    )
-                }*/
                 val newItems = result.getOrNull() ?: emptyList() // Extract list from Result
 
                 // Check for duplicates and empty responses from the server
@@ -212,3 +198,12 @@ class MarketplaceViewModel() : ViewModel() {
     }
 }
 
+class MarketplaceViewModelFactory(private val listingsDB: ListingsDB) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MarketplaceViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MarketplaceViewModel(listingsDB) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
