@@ -26,6 +26,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.earzikimarketplace.data.model.supabaseAdapter.DefaultSupabaseClientFactory
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.util.Navigation
 import com.example.earzikimarketplace.data.util.NavigationRoute
@@ -59,17 +60,17 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    // Provide the startActivity lambda to the SharedViewModel
+                    // Provide the startActivity to the SharedViewModel
                     val sharedViewModel: SharedViewModel by viewModels {
                         SharedViewModel.provideFactory(context, application, startActivity = { intent ->
                             startActivity(intent)
                         })
                     }
 
-                    val apiKey: String = BuildConfig.ApiKey;
-                    val apiUrl: String = BuildConfig.ApiUrl;
-
-                    SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
+                    val apiKey: String = BuildConfig.ApiKey
+                    val apiUrl: String = BuildConfig.ApiUrl
+                    val factory = DefaultSupabaseClientFactory()
+                    SupabaseManager.initializeClient(apiKey, apiUrl, factory)    // Initialize Supabase client
 
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route

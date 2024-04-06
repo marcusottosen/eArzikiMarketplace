@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import com.example.earzikimarketplace.BuildConfig
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.supabaseAdapter.DefaultSupabaseClientFactory
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.model.supabaseAdapter.UserRepository
 import com.example.earzikimarketplace.data.model.supabaseAdapter.storeUserData
@@ -102,16 +103,12 @@ class LoginViewModel() : ViewModel() {
     val loginState: StateFlow<LoginState> = _loginState
 
     fun login(email: String, password: String, context: Context) {
-        val apiUrl: String = BuildConfig.ApiUrl;
-        val apiKey: String = BuildConfig.ApiKey;
-
-
-        SupabaseManager.initializeClient(apiKey, apiUrl)    // Initialize Supabase client
+        val apiUrl: String = BuildConfig.ApiUrl
+        val apiKey: String = BuildConfig.ApiKey
+        val factory = DefaultSupabaseClientFactory()
+        SupabaseManager.initializeClient(apiKey, apiUrl, factory)    // Initialize Supabase client
 
         val repository = UserRepository()
-
-        val goTrue = SupabaseManager.getGoTrue()   // Get GoTrue instance
-
 
         viewModelScope.launch {
             _loginState.value = LoginState.Loading

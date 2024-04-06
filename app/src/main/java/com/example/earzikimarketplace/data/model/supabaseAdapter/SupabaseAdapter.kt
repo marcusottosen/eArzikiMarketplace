@@ -1,6 +1,7 @@
 package com.example.earzikimarketplace.data.model.supabaseAdapter
 
 import androidx.navigation.NavController
+import com.example.earzikimarketplace.BuildConfig
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
@@ -23,28 +24,13 @@ object SupabaseManager {
     private var supabaseClient: SupabaseClient? = null
     private var goTrue: GoTrue? = null
 
-    fun initializeClient(apiKey: String, apiUrl: String) {
-        try {
-            supabaseClient = createSupabaseClient(
-                supabaseUrl = apiUrl,
-                supabaseKey = apiKey
-            ) {
-                install(Postgrest){
-                    defaultSchema = "public"
-                    propertyConversionMethod = PropertyConversionMethod.CAMEL_CASE_TO_SNAKE_CASE
-                }
-                install(Storage) {
-                    transferTimeout = 90.seconds // Default: 120 seconds
-                }
-                install(GoTrue) {
-                    alwaysAutoRefresh = true
-                    autoLoadFromStorage = true
-                }
+    private lateinit var clientFactory: SupabaseClientFactory
 
-            }
+    fun initializeClient(apiKey: String, apiUrl: String, factory: SupabaseClientFactory) {
+        try {
+            supabaseClient = factory.createSupabaseClient(apiKey, apiUrl)
             goTrue = supabaseClient?.gotrue
         } catch (e: Exception) {
-            // If fails, either no internet or invalid API key
             throw InitializationException("Supabase initialization failed", e)
         }
     }
@@ -95,3 +81,27 @@ class InitializationException(message: String, cause: Throwable? = null) : Excep
 class SupabaseClientNotInitializedException(message: String) : IllegalStateException(message)
 class UserRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
 class SessionRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+
+interface SupabaseClientFactory {
+    fun createSupabaseClient(apiKey: String, apiUrl: String): SupabaseClient
+}
+
+class DefaultSupabaseClientFactory : SupabaseClientFactory {
+    override fun createSupabaseClient(apiKey: String, apiUrl: String): SupabaseClient {
+        return createSupabaseClient(supabaseUrl = apiUrl, supabaseKey = apiKey) {
+            install(Postgrest) {
+                defaultSchema = "public"
+                propertyConversionMethod = PropertyConversionMethod.CAMEL_CASE_TO_SNAKE_CASE
+            }
+            install(Storage) {
+                transferTimeout = 90.seconds
+            }
+            install(GoTrue) {
+                alwaysAutoRefresh = true
+                autoLoadFromStorage = true
+            }
+        }
+    }
+}
+

@@ -17,7 +17,21 @@ import kotlinx.coroutines.launch
 class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
 
     private val _items = MutableLiveData<List<Listing>>() //actual list of all items
-    //private val listingsDB = ListingsDB()
+    private val pageSize:Long= 10
+    private val _currentPage = MutableLiveData(0)
+    private val _isLoading = MutableLiveData(false)
+    private val _isPaginating = MutableLiveData(false)
+    val isPaginating: LiveData<Boolean> get() = _isPaginating
+    val items: LiveData<List<Listing>> get() = _items
+    private val _allItemsLoaded = MutableLiveData(false)
+    private val _uiState = MediatorLiveData<UiState>()  // Logic to handle UI states
+
+    // Sorting criteria
+    private var sortByDateDescending = true
+    private var sortByPrice = false
+    private var priceAscending = true
+
+
 
     interface MarketplaceListener { // Used for the UI to observe the ViewModel and react from it.
         fun onValidationSuccess()
@@ -25,27 +39,6 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         fun onError(message: String)
     }
     var listener: MarketplaceListener? = null   // Listener property
-
-    private val pageSize:Long= 10
-    private val _currentPage = MutableLiveData(0)
-    private val _isLoading = MutableLiveData(false)
-
-    // Sorting criteria
-    private var sortByDateDescending = true
-    private var sortByPrice = false
-    private var priceAscending = true
-
-    private val _isPaginating = MutableLiveData(false)
-    val isPaginating: LiveData<Boolean> get() = _isPaginating
-
-    val items: LiveData<List<Listing>> get() = _items
-    private val _allItemsLoaded = MutableLiveData(false)
-    //val allItemsLoaded: LiveData<Boolean> = _allItemsLoaded
-
-
-    // Logic to handle UI states
-    private val _uiState = MediatorLiveData<UiState>()
-
     init {
         // Add sources to MediatorLiveData
         _uiState.addSource(_items) { updateUiState() }
@@ -78,7 +71,7 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         }
     }
 
-    // Call this method when tag or sorting changes
+    // Call this when tag or sorting changes
     fun onTagOrSortingSelected(categoryId: Int, tag: Int?) {
         Log.d("MarketplaceViewmodel", "onTagOrSortingSelected")
         _uiState.value = UiState.LOADING
