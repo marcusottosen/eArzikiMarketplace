@@ -27,6 +27,7 @@ import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
 import com.example.earzikimarketplace.data.model.supabaseAdapter.loadUser
 import com.example.earzikimarketplace.data.util.ImageCache
 import com.example.earzikimarketplace.data.util.getCurrentLocale
+import com.example.earzikimarketplace.data.util.getLanguageLocaleString
 import com.example.earzikimarketplace.data.util.getLocalizedLanguageName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -45,10 +46,10 @@ class SharedViewModel(
     @SuppressLint("StaticFieldLeak")
     private val context = application.applicationContext
 
-    private var textToSpeech: TextToSpeech? = null
+    var textToSpeech: TextToSpeech? = null
 
     init {
-        val initialLocale = getLanguageLocaleString()
+        val initialLocale = getLanguageLocaleString(context)
 
         textToSpeech = TextToSpeech(application.applicationContext) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -71,25 +72,16 @@ class SharedViewModel(
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         textToSpeech?.stop()
         textToSpeech?.shutdown()
         super.onCleared()
     }
 
-    private fun getLanguageLocaleString(): Locale {
-        val currentLocale = getCurrentLocale(context).removeSurrounding("[", "]")
-        val localeParts = currentLocale.split("-")
-        val newLocale = if (localeParts.size > 1) {
-            Locale(localeParts[0], localeParts[1]) // Use language and country constructor
-        } else {
-            Locale(currentLocale) // Use single language code constructor
-        }
-        return newLocale
-    }
+
 
     fun updateLanguage() {
-        val newLocale = getLanguageLocaleString()
+        val newLocale = getLanguageLocaleString(context)
         setTextToSpeechLanguage(newLocale)
     }
 
@@ -258,13 +250,13 @@ class SharedViewModel(
     companion object {
         fun provideFactory(
             context: Context,
-            application: Application, // Add this parameter
+            application: Application,
             startActivity: (Intent) -> Unit
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
-                    return SharedViewModel(application, startActivity) as T // Pass application here
+                    return SharedViewModel(application, startActivity) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

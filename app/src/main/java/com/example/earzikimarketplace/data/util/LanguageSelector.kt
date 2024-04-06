@@ -1,5 +1,6 @@
 package com.example.earzikimarketplace.data.util
 
+import android.content.Context
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,7 +21,7 @@ fun LanguageSelector(
     currentLanguage: String,
     onLanguageSelected: (String) -> Unit
 ) {
-    val supportedLanguages = listOf("en", "fr", "ha") // Add other languages as needed
+    val supportedLanguages = listOf("en", "fr", "ha")
 
     // Display current language
     Text(
@@ -58,4 +59,15 @@ fun getLocalizedLanguageName(languageCode_: String): String {
     } catch (e: Exception) {
         languageCode
     }
+}
+
+fun getLanguageLocaleString(context: Context): Locale {
+    val currentLocale = getCurrentLocale(context).removeSurrounding("[", "]")
+    val localeParts = currentLocale.split("-")
+    val newLocale = if (localeParts.size > 1) {
+        Locale(localeParts[0], localeParts[1]) // Use language and country constructor
+    } else {
+        Locale(currentLocale) // Use single language code constructor
+    }
+    return newLocale
 }
