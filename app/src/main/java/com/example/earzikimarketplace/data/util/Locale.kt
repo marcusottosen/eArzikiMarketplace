@@ -10,6 +10,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
+/**
+ * Sets the locale for the application to the picked language code.
+ * @param context The context used to access resources and system information.
+ * @param languageCode The language code representing the picked locale.
+ */
 fun setLocale(context: Context, languageCode: String) {
     val locale = Locale(languageCode)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -27,6 +32,11 @@ fun setLocale(context: Context, languageCode: String) {
     context.createConfigurationContext(config)
 }
 
+/**
+ * Retrieves the current locale of the application.
+ * @param context The context used to access resources and system information.
+ * @return The current locale of the application as a string.
+ */
 fun getCurrentLocale(context: Context): String {
     val currentAppLocales = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         context.getSystemService(LocaleManager::class.java)

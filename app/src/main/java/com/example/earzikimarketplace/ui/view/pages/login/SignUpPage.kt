@@ -1,7 +1,11 @@
 package com.example.earzikimarketplace.ui.view.pages.login
 
 import android.util.Patterns
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -11,7 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,7 +39,6 @@ import com.example.earzikimarketplace.ui.viewmodel.LoginViewModel
 fun SignUpPage(navController: NavController) {
     val viewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
-
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -123,43 +131,54 @@ fun SignUpPage(navController: NavController) {
         Button(
             onClick = {
                 // Reset the error message at the beginning
-                errorMessage  = null
+                errorMessage = null
 
                 // Validate all fields
                 when {
                     firstName.isEmpty() -> {
-                        errorMessage  = R.string.first_name_is_required
+                        errorMessage = R.string.first_name_is_required
                     }
+
                     surname.isEmpty() -> {
                         errorMessage = R.string.surname_is_required
                     }
+
                     phoneNumber.length != 8 -> {
                         errorMessage = R.string.phone_number_must_be_8_digits
                     }
+
                     !phoneNumber.all { it.isDigit() } -> {
                         errorMessage = R.string.phone_number_must_be_numeric
                     }
+
                     !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                         errorMessage = R.string.invalid_email_format
                     }
+
                     password.isEmpty() -> {
                         errorMessage = R.string.password_is_required
                     }
+
                     confirmPassword.isEmpty() -> {
                         errorMessage = R.string.confirm_password_is_required
                     }
+
                     password != confirmPassword -> {
                         errorMessage = R.string.passwords_do_not_match
                     }
+
                     firstName.any { it.isDigit() } -> {
                         errorMessage = R.string.first_name_cannot_contain_numbers
                     }
+
                     surname.any { it.isDigit() } -> {
                         errorMessage = R.string.surname_cannot_contain_numbers
                     }
+
                     age.isEmpty() -> {
                         errorMessage = R.string.age_is_required
                     }
+
                     age.toIntOrNull()?.let { it < 16 } ?: true -> {
                         errorMessage =
                             R.string.you_must_be_above_16_years_old_to_sign_up
@@ -168,7 +187,15 @@ fun SignUpPage(navController: NavController) {
 
                 // Only proceed if there are no errors
                 if (errorMessage == null) {
-                    viewModel.signUp(context, email, firstName, surname, phoneNumber.toInt(), age.toInt(), password)
+                    viewModel.signUp(
+                        context,
+                        email,
+                        firstName,
+                        surname,
+                        phoneNumber.toInt(),
+                        age.toInt(),
+                        password
+                    )
                 }
             }
         ) {
@@ -194,39 +221,48 @@ fun SignUpPage(navController: NavController) {
             is LoginViewModel.SignUpState.Loading -> {
                 CircularProgressIndicator()
             }
+
             is LoginViewModel.SignUpState.Success -> {
                 val email = (signUpState as LoginViewModel.SignUpState.Success).email
                 Text(stringResource(R.string.sign_up_successful_email, email))
                 navController.navigate(NavigationRoute.Home.route)
-                viewModel.resetLoginState()
+                viewModel.resetStates()
             }
+
             is LoginViewModel.SignUpState.Error -> {
                 val rawErrorMessage = (signUpState as LoginViewModel.SignUpState.Error).message
                 val userFriendlyErrorMessage = when {
                     rawErrorMessage.contains("user already registered", ignoreCase = true) -> {
                         stringResource(R.string.email_already_registered)
                     }
+
                     rawErrorMessage.contains("not_found", ignoreCase = true) -> {
                         stringResource(R.string.resource_not_found_or_access_denied)
                     }
+
                     rawErrorMessage.contains("unauthorized", ignoreCase = true) -> {
                         stringResource(R.string.unauthorized_access)
                     }
+
                     rawErrorMessage.contains("too many requests", ignoreCase = true) -> {
                         stringResource(R.string.too_many_requests_please_try_again_later)
                     }
+
                     rawErrorMessage.contains("database_timeout", ignoreCase = true) -> {
                         stringResource(R.string.database_timeout_please_try_again_later)
                     }
+
                     rawErrorMessage.contains("internal_server_error", ignoreCase = true) -> {
                         stringResource(R.string.internal_server_error_please_contact_support)
                     }
+
                     else -> {
                         rawErrorMessage
                     } // Use the original error message if no specific condition is matched
                 }
                 Text(userFriendlyErrorMessage)
             }
+
             else -> {
             }
         }

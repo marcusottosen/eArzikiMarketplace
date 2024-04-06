@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,9 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +37,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
-import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.PageTop
@@ -56,11 +51,9 @@ fun CheckboxGrid(navController: NavController, viewModel: AddItemViewModel) {
     val rows = ceil(viewModel.allTags.size / columns.toFloat()).toInt()
 
 
-    Scaffold(
-        topBar = {
-            PageTop(navController, stringResource(R.string.create_ad))
-        }
-    ) { paddingValues ->
+    Scaffold(topBar = {
+        PageTop(navController, stringResource(R.string.create_ad))
+    }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,11 +77,9 @@ fun CheckboxGrid(navController: NavController, viewModel: AddItemViewModel) {
                                 val tagItem = viewModel.allTags[index]
                                 val isSelected = viewModel.selectedTags.contains(tagItem)
 
-                                TagWithCircularCheckbox(
-                                    tag = tagItem,
+                                TagWithCircularCheckbox(tag = tagItem,
                                     isSelected = isSelected,
-                                    onCheckedChange = { viewModel.toggleTagSelection(tagItem) }
-                                )
+                                    onCheckedChange = { viewModel.toggleTagSelection(tagItem) })
                             } else {
                                 Spacer(modifier = Modifier.weight(1f)) // Fill empty space for incomplete rows
                             }
@@ -100,11 +91,9 @@ fun CheckboxGrid(navController: NavController, viewModel: AddItemViewModel) {
                 onClick = {
                     if (viewModel.selectedTags.isEmpty()) {
                         Toast.makeText(
-                            context,
-                            R.string.please_pick_at_least_one_tag, Toast.LENGTH_SHORT
+                            context, R.string.please_pick_at_least_one_tag, Toast.LENGTH_SHORT
                         ).show()
-                    } else
-                        navController.navigate(NavigationRoute.AddItemImagePicker.route)
+                    } else navController.navigate(NavigationRoute.AddItemImagePicker.route)
                 },
 
                 modifier = Modifier
@@ -112,8 +101,7 @@ fun CheckboxGrid(navController: NavController, viewModel: AddItemViewModel) {
                     .fillMaxWidth(0.8f) // 80% of the screen width
                     .widthIn(max = 800.dp) // max width for large screens/tablets
                     .padding(16.dp)
-                    .padding(bottom = 100.dp),
-                shape = RoundedCornerShape(8.dp)
+                    .padding(bottom = 100.dp), shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.next))
             }
@@ -125,7 +113,8 @@ fun CheckboxGrid(navController: NavController, viewModel: AddItemViewModel) {
 @Composable
 fun TagWithCircularCheckbox(tag: TagEnum, isSelected: Boolean, onCheckedChange: (Boolean) -> Unit) {
     // Fixed width for the checkbox and text container to ensure alignment
-    val maxWidth = LocalConfiguration.current.screenWidthDp.dp / 2 - 32.dp //  16dp padding on both sides
+    val maxWidth =
+        LocalConfiguration.current.screenWidthDp.dp / 2 - 32.dp //  16dp padding on both sides
 
     Row(
         modifier = Modifier
@@ -149,12 +138,9 @@ fun TagWithCircularCheckbox(tag: TagEnum, isSelected: Boolean, onCheckedChange: 
     }
 }
 
-
 @Composable
 fun CircularCheckbox(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier

@@ -33,20 +33,19 @@ import com.example.earzikimarketplace.data.util.NavigationRoute
 fun OfferMenuCard(category: DBCategory, navController: NavController) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp, 0.dp)
-            .clickable{
-                      navController.navigate(NavigationRoute.Offers.route)
+            .clickable {
+                navController.navigate(NavigationRoute.Offers.route)
             },
-        //.height(240.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
     ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
+        Column(
+            modifier = Modifier.background(colorResource(R.color.white))
+        ) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = category.categoryName,
@@ -56,7 +55,6 @@ fun OfferMenuCard(category: DBCategory, navController: NavController) {
                     .fillMaxWidth()
             )
             Column(
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(60.dp)
                     .padding(horizontal = 8.dp)
@@ -76,11 +74,8 @@ fun OfferMenuCard(category: DBCategory, navController: NavController) {
                         stringResource(R.string.items, count)
                     } else {
                         stringResource(R.string.loading)
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    }, style = MaterialTheme.typography.bodySmall, color = Color.Gray
                 )
-
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -91,17 +86,16 @@ fun OfferMenuCard(category: DBCategory, navController: NavController) {
 fun PlaceholderOfferCard() {
     Card(
         shape = RoundedCornerShape(8.dp),
-        //elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp, 0.dp),
-        //.height(240.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
     ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
+        Column(
+            modifier = Modifier.background(colorResource(R.color.white))
+        ) {
             Box(
                 modifier = Modifier
                     .height(150.dp)
@@ -109,7 +103,6 @@ fun PlaceholderOfferCard() {
                     .background(Color.Gray)
             )
             Column(
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(60.dp)
                     .padding(horizontal = 8.dp)
@@ -125,7 +118,6 @@ fun PlaceholderOfferCard() {
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
-
             }
             Spacer(modifier = Modifier.height(8.dp))
         }

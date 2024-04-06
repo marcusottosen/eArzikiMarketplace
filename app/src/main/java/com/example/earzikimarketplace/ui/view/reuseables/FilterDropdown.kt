@@ -16,9 +16,7 @@ import com.example.earzikimarketplace.data.model.dataClass.SortOption
 
 @Composable
 fun FilterDropdown(
-    expanded: MutableState<Boolean>,
-    onSortSelected: (Int, Int) -> Unit,
-    categoryID: Int
+    expanded: MutableState<Boolean>, onSortSelected: (Int, Int) -> Unit, categoryID: Int
 ) {
     val sortOptions = SortOption.values()
     val typography = MaterialTheme.typography
@@ -32,18 +30,17 @@ fun FilterDropdown(
 
     ) {
         sortOptions.forEach { option ->
-            DropdownMenuItem(
-                text = { Text(text = stringResource(id = option.resourceId),
+            DropdownMenuItem(text = {
+                Text(
+                    text = stringResource(id = option.resourceId),
                     style = typography.labelMedium.copy(color = colors.onSurface)
                 )
-                       },
-                onClick = {
-                    onSortSelected(option.id, categoryID)
-                    expanded.value = false
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 8.dp)
+            }, onClick = {
+                onSortSelected(option.id, categoryID)
+                expanded.value = false
+            }, modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp)
             )
         }
     }

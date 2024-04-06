@@ -26,9 +26,6 @@ import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.signOut
 import com.example.earzikimarketplace.data.util.LanguageSelector
-import com.example.earzikimarketplace.data.util.getCurrentLocale
-import com.example.earzikimarketplace.data.util.getLocalizedLanguageName
-import com.example.earzikimarketplace.data.util.setLocale
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 @Composable
@@ -39,12 +36,13 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
     val isImageLoadingEnabled by sharedViewModel.imageLoadingEnabled.observeAsState(initial = true)
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.user_profile), style = MaterialTheme.typography.headlineMedium)
-
+            Text(
+                text = stringResource(R.string.user_profile),
+                style = MaterialTheme.typography.headlineMedium
+            )
 
             Button(onClick = { navController.popBackStack() }) {
                 Text(text = stringResource(R.string.back))
@@ -54,8 +52,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
 
 
             LanguageSelector(
-                sharedViewModel = sharedViewModel,
-                context = context
+                sharedViewModel = sharedViewModel, context = context
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -66,12 +63,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
-            Switch(
-                checked = isImageLoadingEnabled,
-                onCheckedChange = {
-                    sharedViewModel.toggleImageLoading()
-                }
-            )
+            Switch(checked = isImageLoadingEnabled, onCheckedChange = {
+                sharedViewModel.toggleImageLoading()
+            })
 
             Spacer(modifier = Modifier.height(100.dp))
 

@@ -44,15 +44,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.earzikimarketplace.data.util.formatDayMonth
-import com.example.earzikimarketplace.data.util.formatHourMinute
-import com.example.earzikimarketplace.data.util.formatYear
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -61,12 +56,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.util.formatDayMonth
+import com.example.earzikimarketplace.data.util.formatHourMinute
+import com.example.earzikimarketplace.data.util.formatYear
 import com.example.earzikimarketplace.ui.view.reuseables.FullScreenImageDialog
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -95,20 +94,17 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
 
     when {
         userResult?.isSuccess == true -> {
-            Log.d("ItemInfoPage", "User data true")
             val user = userResult!!.getOrNull()
             // Display user data
-            // Make sure to handle the case where user is null
         }
-        userResult?.isFailure == true -> {
-            Log.d("ItemInfoPage", "User data false")
 
+        userResult?.isFailure == true -> {
             val exception = userResult!!.exceptionOrNull()
             // Handle the error
         }
+
         else -> {
             Log.d("ItemInfoPage", "User data else")
-
             // Loading state or initial state
         }
     }
@@ -121,8 +117,7 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
     }
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         item {
             IconButton(onClick = { navController.navigateUp() }) {
@@ -148,13 +143,12 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
 
                         // Determine if we should show placeholder or actual images
                         val showPlaceholder = imagesData == null || imagesData!!.isEmpty()
-                        val pageCount = if (showPlaceholder) item.image_urls?.size else imagesData!!.size
+                        val pageCount =
+                            if (showPlaceholder) item.image_urls?.size else imagesData!!.size
 
                         if (pageCount != null) {
                             HorizontalPager(
-                                pageCount = pageCount,
-                                state = pagerState,
-                                //key = { images[it] },
+                                pageCount = pageCount, state = pagerState,
                                 pageSize = PageSize.Fill
                             ) { index ->
                                 if (showPlaceholder) {
@@ -168,19 +162,15 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                                 } else {
                                     // Display the actual image
                                     imagesData?.get(index)?.let { imageBitmap ->
-                                        Image(
-                                            bitmap = imageBitmap,
+                                        Image(bitmap = imageBitmap,
                                             contentDescription = null,
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .clickable {
-                                                    // Assuming you have a way to convert imageBitmap or its identifier to a Uri
-                                                    // This is a placeholder, you'll need to replace it with your actual logic
                                                     val uri = Uri.parse(imageBitmap.toString())
                                                     selectedImageBitmap = imageBitmap
-                                                }
-                                        )
+                                                })
                                     }
                                 }
                             }
@@ -211,9 +201,7 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                             }
                             Box(
                                 modifier = Modifier
-                                    //.offset(y = -(16).dp)
                                     .fillMaxWidth()
-                                    //.background(MaterialTheme.colorScheme.tertiary)
                                     .align(Alignment.Center)
                             ) {
 
@@ -272,8 +260,6 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
 
                     Text( // Price
                         text = "${item.price} CFA.",
-                        //style = TextStyle(fontSize = 18.sp),
-                        //fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -282,7 +268,6 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                         text = item.title,
                         style = MaterialTheme.typography.titleMedium,
                     )
-
 
                     Row(
                         modifier = Modifier
@@ -295,18 +280,23 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                             modifier = Modifier.weight(0.8f) // 80% space texts
                         ) {
                             Text( // Posted date
-                                text = "${stringResource(id = R.string.posted)} ${item.post_date?.let { formatDayMonth(it) }}/${
+                                text = "${stringResource(id = R.string.posted)} ${
+                                    item.post_date?.let {
+                                        formatDayMonth(
+                                            it
+                                        )
+                                    }
+                                }/${
                                     item.post_date?.let {
                                         formatYear(it)
                                     }
                                 } - ${item.post_date?.let { formatHourMinute(it) }}",
                                 style = MaterialTheme.typography.bodySmall
                             )
-                            Text( // Location
-                                text = if (locationResult?.isSuccess == true)
-                                    locationResult?.getOrNull()?.city.toString() + ", " + locationResult?.getOrNull()?.address.toString()
-                                else
-                                    "",
+                            Text(
+                                // Location
+                                text = if (locationResult?.isSuccess == true) locationResult?.getOrNull()?.city.toString() + ", " + locationResult?.getOrNull()?.address.toString()
+                                else "",
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
@@ -327,7 +317,6 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                         }
                     }
 
-
                     Text( // Description
                         text = item.description,
                         style = MaterialTheme.typography.bodyMedium,
@@ -342,26 +331,26 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
                 UserContactInfo(user = userResult?.getOrNull(), sharedViewModel, item.title)
             }
             Spacer(modifier = Modifier.height(100.dp))
-
-
         }
     }
 }
 
 @Composable
-fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: String){
+fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: String) {
     val context = LocalContext.current
 
-    Column (modifier = Modifier.padding(26.dp)) {
+    Column(modifier = Modifier.padding(26.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
                 .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
         ) {
-            Row (modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
                 Image(
                     painter = painterResource(R.drawable.home_crafts_image),
                     contentDescription = null,
@@ -371,9 +360,11 @@ fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: St
                         .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column (modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically)
+                ) {
                     if (user != null) {
                         Text(
                             text = user.firstname + " " + user.surname,
@@ -415,7 +406,11 @@ fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: St
                 shape = RoundedCornerShape(10.dp), // Sets the corner shape of the button
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF25d366))
             ) {
-                Text(stringResource(R.string.whatsapp), color = Color.White, style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.whatsapp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium
+                )
                 Spacer(Modifier.width(15.dp))
                 Image(
                     painter = painterResource(id = R.drawable.whatsapp_white_icon),
@@ -433,7 +428,11 @@ fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: St
                 shape = RoundedCornerShape(10.dp), // Sets the corner shape of the button
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                Text(stringResource(R.string.sms), color = Color.White, style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.sms),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium
+                )
                 Spacer(Modifier.width(15.dp))
                 Image(
                     painter = painterResource(id = R.drawable.sms_icon),
@@ -443,6 +442,4 @@ fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: St
             }
         }
     }
-
-
 }

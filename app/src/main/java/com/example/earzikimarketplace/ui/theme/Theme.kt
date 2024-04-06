@@ -46,22 +46,11 @@ private val LightColorScheme = lightColorScheme(
     error = Color(0xFFCC4828),
     surface = Color(0xFF4A8694)
 
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
 @Composable
 fun EArzikiMarketplaceTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -70,6 +59,7 @@ fun EArzikiMarketplaceTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicLightColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
@@ -84,7 +74,8 @@ fun EArzikiMarketplaceTheme(
 
             // Determine the appropriate system icon color based on the status bar color
             val isLightStatusBar = isColorLight(statusBarColor)
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = isLightStatusBar
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                isLightStatusBar
         }
     }
 
@@ -94,6 +85,7 @@ fun EArzikiMarketplaceTheme(
         content = content
     )
 }
+
 // Function to determine whether a color is light or dark
 fun isColorLight(color: Color): Boolean {
     // Calculate the perceived brightness of the color

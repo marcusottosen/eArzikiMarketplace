@@ -1,7 +1,6 @@
 package com.example.earzikimarketplace.data.model.supabaseAdapter
 
 import androidx.navigation.NavController
-import com.example.earzikimarketplace.BuildConfig
 import com.example.earzikimarketplace.data.util.NavigationRoute
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
@@ -26,6 +25,12 @@ object SupabaseManager {
 
     private lateinit var clientFactory: SupabaseClientFactory
 
+    /**
+     * Initializes the Supabase client with the provided API key and URL.
+     * @param apiKey The Supabase API key.
+     * @param apiUrl The Supabase API URL.
+     * @param factory The factory used to create the Supabase client.
+     */
     fun initializeClient(apiKey: String, apiUrl: String, factory: SupabaseClientFactory) {
         try {
             supabaseClient = factory.createSupabaseClient(apiKey, apiUrl)
@@ -35,14 +40,31 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Retrieves the Supabase client.
+     * @return The Supabase client.
+     * @throws SupabaseClientNotInitializedException if the Supabase client is not initialized.
+     */
     fun getClient(): SupabaseClient {
-        return supabaseClient ?: throw SupabaseClientNotInitializedException("Supabase client not initialized")
+        return supabaseClient
+            ?: throw SupabaseClientNotInitializedException("Supabase client not initialized")
     }
 
+    /**
+     * Retrieves the GoTrue client used to handle users.
+     * @return The GoTrue client.
+     * @throws SupabaseClientNotInitializedException if the GoTrue client is not initialized.
+     */
     fun getGoTrue(): GoTrue {
-        return goTrue ?: throw SupabaseClientNotInitializedException("GoTrue client not initialized")
+        return goTrue
+            ?: throw SupabaseClientNotInitializedException("GoTrue client not initialized")
     }
 
+    /**
+     * Retrieves information about the logged-in user.
+     * @return The user information.
+     * @throws UserRetrievalException if the user information cannot be retrieved.
+     */
     suspend fun getLoggedInUser(): UserInfo {
         try {
             return goTrue?.retrieveUserForCurrentSession(updateSession = true)
@@ -52,6 +74,11 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Retrieves the current session so that the user stays logged in after app has been closed.
+     * @return The current session.
+     * @throws SessionRetrievalException if the session cannot be retrieved.
+     */
     fun getSession(): String {
         try {
             return goTrue?.currentSessionOrNull().toString()    // Returns null if no session
@@ -60,6 +87,11 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Signs out the current user.
+     * @param navController The NavController for navigating after sign out.
+     * @throws SessionRetrievalException if the sign out operation fails.
+     */
     suspend fun signOut(navController: NavController) {
         try {
             goTrue?.logout()
@@ -69,6 +101,11 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Refreshes the current session.
+     * @return The refreshed session.
+     * @throws SessionRetrievalException if the session cannot be refreshed.
+     */
     suspend fun refreshSession(): String {
         try {
             return goTrue?.refreshCurrentSession().toString()
@@ -77,16 +114,45 @@ object SupabaseManager {
         }
     }
 }
+
+/**
+ * Exception thrown when Supabase initialization fails.
+ */
 class InitializationException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+/**
+ * Exception thrown when the Supabase client is not initialized.
+ */
 class SupabaseClientNotInitializedException(message: String) : IllegalStateException(message)
+
+/**
+ * Exception thrown when user information cannot be retrieved.
+ */
 class UserRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
-class SessionRetrievalException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+/**
+ * Exception thrown when session retrieval fails.
+ */
+class SessionRetrievalException(message: String, cause: Throwable? = null) :
+    Exception(message, cause)
 
 
+/**
+ * Factory interface for creating Supabase clients.
+ */
 interface SupabaseClientFactory {
+    /**
+     * Creates the Supabase client.
+     * @param apiKey The Supabase API key.
+     * @param apiUrl The Supabase API URL.
+     * @return The Supabase client.
+     */
     fun createSupabaseClient(apiKey: String, apiUrl: String): SupabaseClient
 }
 
+/**
+ * Default implementation of SupabaseClientFactory.
+ */
 class DefaultSupabaseClientFactory : SupabaseClientFactory {
     override fun createSupabaseClient(apiKey: String, apiUrl: String): SupabaseClient {
         return createSupabaseClient(supabaseUrl = apiUrl, supabaseKey = apiKey) {

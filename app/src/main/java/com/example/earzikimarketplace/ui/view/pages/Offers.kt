@@ -18,28 +18,24 @@ import com.example.earzikimarketplace.ui.view.reuseables.PageTop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Offers(navController: NavController){
-    Scaffold(
-        topBar = {
-            PageTop(navController, stringResource(R.string.company_offers))
-        }
-    ) { paddingValues ->
+fun Offers(navController: NavController) {
+    Scaffold(topBar = {
+        PageTop(navController, stringResource(R.string.company_offers))
+    }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 item {
-
-                    OfferCard(navController = navController)
-                    OfferCard(navController = navController)
-                    OfferCard(navController = navController)
-                    OfferCard(navController = navController)
-                    OfferCard(navController = navController)
+                    OfferCard()
+                    OfferCard()
+                    OfferCard()
+                    OfferCard()
+                    OfferCard()
 
                     Spacer(modifier = Modifier.padding(bottom = 100.dp))
 

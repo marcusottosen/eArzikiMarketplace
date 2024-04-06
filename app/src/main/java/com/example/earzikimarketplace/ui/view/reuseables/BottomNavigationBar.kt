@@ -6,7 +6,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,43 +31,41 @@ fun BottomNavigationBar(navController: NavController) {
         NavigationItem.Offers,
         NavigationItem.Profile
     )
-    NavigationBar (
-        containerColor = colorResource(id = R.color.white),
-        tonalElevation = 12.dp
+    NavigationBar(
+        containerColor = colorResource(id = R.color.white), tonalElevation = 12.dp
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
         // Allow for others pages to keep the nav item "active"
-        val isHomeActive = currentRoute == NavigationItem.Home.route ||
-                currentRoute?.startsWith(NavigationRoute.Marketplace.route) == true ||
-                currentRoute == NavigationRoute.ItemDetails.route
+        val isHomeActive =
+            currentRoute == NavigationItem.Home.route || currentRoute?.startsWith(NavigationRoute.Marketplace.route) == true || currentRoute == NavigationRoute.ItemDetails.route
         Log.d("bottomNavBar", isHomeActive.toString())
         items.forEach { item ->
             val isSelected = when (item) {
                 NavigationItem.Home -> isHomeActive
                 else -> currentRoute == item.route
             }
-            NavigationBarItem(
-                icon = {
-                    val iconColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    Icon(
-                        painterResource(id = item.icon),
-                        contentDescription = item.title,
-                        modifier = Modifier.size(25.dp),
-                        tint = iconColor
+            NavigationBarItem(icon = {
+                val iconColor =
+                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+                        alpha = 0.6f
                     )
-                },
-                label = {
-                    Text(text = item.title,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    ) },
+                Icon(
+                    painterResource(id = item.icon),
+                    contentDescription = item.title,
+                    modifier = Modifier.size(25.dp),
+                    tint = iconColor
+                )
+            }, label = {
+                Text(
+                    text = item.title, style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                )
+            },
 
-                alwaysShowLabel = true,
-                selected = false,
-                onClick = {
+                alwaysShowLabel = true, selected = false, onClick = {
                     navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
@@ -81,8 +78,7 @@ fun BottomNavigationBar(navController: NavController) {
                         // Restore state when reselecting a previously selected item
                         restoreState = false
                     }
-                }
-            )
+                })
         }
     }
 }

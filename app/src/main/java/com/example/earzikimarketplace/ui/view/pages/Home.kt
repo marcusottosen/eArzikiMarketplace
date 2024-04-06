@@ -3,14 +3,26 @@ package com.example.earzikimarketplace.ui.view.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +38,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.DBCategory
+import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.CategoryCard
 import com.example.earzikimarketplace.ui.view.reuseables.OfferMenuCard
-import com.example.earzikimarketplace.ui.viewmodel.HomeViewModel
-import com.example.earzikimarketplace.data.util.NavigationRoute
 import com.example.earzikimarketplace.ui.view.reuseables.PlaceholderCategoryCard
 import com.example.earzikimarketplace.ui.view.reuseables.PlaceholderOfferCard
+import com.example.earzikimarketplace.ui.viewmodel.HomeViewModel
 
 @Composable
 fun Home(navController: NavController) {
@@ -47,13 +59,12 @@ fun Home(navController: NavController) {
 
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        item{
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item {
             HomePageTop(navController)
         }
-        item{
+        item {
             CategoryList(navController, categories, isLoading)
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -62,17 +73,13 @@ fun Home(navController: NavController) {
             if (!isLoading && categories.size > 4) {
                 OfferMenuCard(categories[4], navController)
                 Spacer(modifier = Modifier.height(20.dp))
-            } else
-                PlaceholderOfferCard()
+            } else PlaceholderOfferCard()
         }
-
-        item{
-
+        item {
             Button(
-                onClick = { navController.navigate(NavigationRoute.AddItem.route)
-                    //viewModel.addItem(testItem)
-                },
-                modifier = Modifier.padding(16.dp)
+                onClick = {
+                    navController.navigate(NavigationRoute.AddItem.route)
+                }, modifier = Modifier.padding(16.dp)
             ) {
                 Text("Add Item")
             }
@@ -93,10 +100,8 @@ fun HomePageTop(navController: NavController) {
                 .fillMaxWidth()
                 .background(
                     brush = Brush.verticalGradient(
-                        //colors = listOf(Color(0xFFFD5A0F), Color(0xFFFD7232))
                         colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.surfaceTint
+                            MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surfaceTint
                         )
                     )
                 )
@@ -120,15 +125,13 @@ fun HomePageTop(navController: NavController) {
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
-                Image(
-                    painter = painterResource(R.drawable.home_crafts_image),
+                Image(painter = painterResource(R.drawable.home_crafts_image),
                     contentDescription = null,
                     modifier = Modifier
                         .size(45.dp)
                         .align(Alignment.CenterVertically)
                         .clip(CircleShape)
-                        .clickable { navController.navigate(NavigationRoute.Profile.route) }
-                )
+                        .clickable { navController.navigate(NavigationRoute.Profile.route) })
             }
         }
 
@@ -142,9 +145,6 @@ fun HomePageTop(navController: NavController) {
         )
     }
 }
-
-
-
 
 
 @Composable
@@ -178,7 +178,6 @@ fun CategoryList(navController: NavController, categories: List<DBCategory>, isL
                 )
             }
         }
-
 
         Row(
             modifier = Modifier

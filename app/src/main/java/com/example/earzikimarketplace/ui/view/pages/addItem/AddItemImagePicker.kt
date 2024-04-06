@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,19 +57,19 @@ import com.example.earzikimarketplace.ui.viewmodel.AddItemViewModel
 @Composable
 fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel) {
     val selectedImageUris by viewModel.selectedImageUris.observeAsState(emptyList())
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { viewModel.addSelectedImageUri(it) }
-    }
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { viewModel.addSelectedImageUri(it) }
+        }
     val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            PageTop(navController, stringResource(R.string.create_ad))
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
+    Scaffold(topBar = {
+        PageTop(navController, stringResource(R.string.create_ad))
+    }) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             Column(
                 modifier = Modifier
@@ -93,7 +92,11 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                             val index = row * 2 + imageIndex
                             ImagePickerBox(
                                 uri = selectedImageUris.getOrNull(index),
-                                onPickImage = { if (selectedImageUris.size <= index) launcher.launch("image/*") },
+                                onPickImage = {
+                                    if (selectedImageUris.size <= index) launcher.launch(
+                                        "image/*"
+                                    )
+                                },
                                 onRemoveClick = { viewModel.removeSelectedImageUri(index) },
                                 modifier = Modifier
                                     .weight(1f)
@@ -108,15 +111,15 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
             Button(
                 onClick = {
                     if (viewModel.selectedImageUris.value.isNullOrEmpty()) {
-                        Toast.makeText(context,
-                            R.string.please_choose_at_least_one_image, Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(
+                            context, R.string.please_choose_at_least_one_image, Toast.LENGTH_SHORT
+                        ).show()
                         return@Button
                     }
 
                     viewModel.uploadImagesAndAddItem(context)
-                    navController.navigate(NavigationRoute.AddItemStatusScreen.route){
-                        popUpTo(NavigationRoute.AddItemStatusScreen.route){
+                    navController.navigate(NavigationRoute.AddItemStatusScreen.route) {
+                        popUpTo(NavigationRoute.AddItemStatusScreen.route) {
                             inclusive = true
                         }
                     }
@@ -125,7 +128,8 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(0.8f) // 80% of the screen width
                     .widthIn(max = 800.dp) // max width for large screens/tablets
-                    .padding(16.dp).padding(bottom = 100.dp),
+                    .padding(16.dp)
+                    .padding(bottom = 100.dp),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.post_item))
@@ -136,13 +140,9 @@ fun AddItemImagePicker(navController: NavController, viewModel: AddItemViewModel
     }
 }
 
-
 @Composable
 fun ImagePickerBox(
-    uri: Uri?,
-    onPickImage: () -> Unit,
-    onRemoveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    uri: Uri?, onPickImage: () -> Unit, onRemoveClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     var showFullScreen by remember { mutableStateOf(false) }
 
@@ -171,8 +171,7 @@ fun ImagePickerBox(
                         color = Color.Black.copy(alpha = 0.4f), // Semi-transparent black circle
                         shape = CircleShape
                     )
-                    .clickable(onClick = onRemoveClick),
-                contentAlignment = Alignment.Center
+                    .clickable(onClick = onRemoveClick), contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,

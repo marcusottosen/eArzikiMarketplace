@@ -15,13 +15,21 @@ import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 import java.util.Locale
 
+
+/**
+ * Composable function to display the language selector UI, allowing users to switch between supported languages.
+ * @param sharedViewModel The SharedViewModel instance for managing shared data and communication between components.
+ * @param context The context used to access resources and system information.
+ */
 @Composable
 fun LanguageSelector(
     sharedViewModel: SharedViewModel,
     context: Context
 ) {
-    val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
+    val currentLanguage =
+        getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
 
+    // List of supported languages
     val supportedLanguages = listOf("en", "fr", "ha")
 
     // Display current language
@@ -39,10 +47,9 @@ fun LanguageSelector(
             if (language != currentLanguage) {
                 Button(
                     onClick = {
-                        //onLanguageSelected(language)
                         setLocale(context, language)
                         sharedViewModel.updateLanguage()
-                              },
+                    },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text(text = getLocalizedLanguageName(language))
@@ -52,6 +59,11 @@ fun LanguageSelector(
     }
 }
 
+/**
+ * Retrieves the localized language name based on the provided language code.
+ * @param languageCode_ The language code used to retrieve the localized language name.
+ * @return The localized language name.
+ */
 fun getLocalizedLanguageName(languageCode_: String): String {
     val languageCode = languageCode_.replace("[", "").replace("]", "")
     return try {
@@ -63,6 +75,11 @@ fun getLocalizedLanguageName(languageCode_: String): String {
     }
 }
 
+/**
+ * Retrieves the Locale object representing the language locale.
+ * @param context The context used to access resources and system information.
+ * @return The Locale object representing the language locale.
+ */
 fun getLanguageLocaleString(context: Context): Locale {
     val currentLocale = getCurrentLocale(context).removeSurrounding("[", "]")
     val localeParts = currentLocale.split("-")

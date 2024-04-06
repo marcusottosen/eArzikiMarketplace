@@ -67,14 +67,13 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
     val priceState = remember { mutableStateOf("3999") }
     val isNumber = remember(priceState.value) { priceState.value.toFloatOrNull() != null }
 
-    val categoryState = remember { mutableStateOf<CategoryEnum?>(CategoryEnum.HOME_CRAFTS) } // default = null
+    val categoryState =
+        remember { mutableStateOf<CategoryEnum?>(CategoryEnum.HOME_CRAFTS) } // default = null
     val imageUrlsState = remember { mutableStateOf(listOf<String>()) }
 
-    Scaffold(
-        topBar = {
-            PageTop(navController, stringResource(R.string.create_ad))
-        }
-    ) { paddingValues ->
+    Scaffold(topBar = {
+        PageTop(navController, stringResource(R.string.create_ad))
+    }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,8 +86,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
             ) {
 
                 //Title
-                OutlinedTextField(
-                    value = titleState.value,
+                OutlinedTextField(value = titleState.value,
                     onValueChange = { titleState.value = it },
                     label = { Text(stringResource(R.string.add_item_title)) },
                     singleLine = true,
@@ -98,8 +96,7 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 )
 
                 // Description
-                OutlinedTextField(
-                    value = descriptionState.value,
+                OutlinedTextField(value = descriptionState.value,
                     onValueChange = { descriptionState.value = it },
                     label = { Text(stringResource(R.string.add_item_description)) },
                     maxLines = 7,
@@ -114,33 +111,24 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                 var expanded by remember { mutableStateOf(false) }
                 val categories = CategoryEnum.values().map { it.getTitle(context) }
 
-                OutlinedTextField(
-                    value = categoryState.value?.getTitle(context) ?: "",
+                OutlinedTextField(value = categoryState.value?.getTitle(context) ?: "",
                     onValueChange = {},
                     label = { Text(stringResource(R.string.add_item_category)) },
                     readOnly = true,
                     trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowDropDown,
+                        Icon(imageVector = Icons.Filled.ArrowDropDown,
                             contentDescription = null,
-                            Modifier.clickable { expanded = true }
-                        )
+                            Modifier.clickable { expanded = true })
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     categories.forEach { category ->
-                        DropdownMenuItem(
-                            text = { Text(category) },
-                            onClick = {
-                                categoryState.value =
-                                    CategoryEnum.values().find { it.getTitle(context) == category }
-                                expanded = false
-                            }
-                        )
+                        DropdownMenuItem(text = { Text(category) }, onClick = {
+                            categoryState.value =
+                                CategoryEnum.values().find { it.getTitle(context) == category }
+                            expanded = false
+                        })
                     }
                 }
 
@@ -170,8 +158,6 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f)) // This spacer pushes the button to the bottom
-
-
             }
 
             Button(
@@ -184,48 +170,18 @@ fun AddItem(navController: NavController, viewModel: AddItemViewModel) {
                         categoryId = categoryState.value,
                         imageUrls = imageUrlsState.value
                     )
-               //    if (titleState.value.isBlank() || descriptionState.value.isBlank() || priceState.value.isBlank() || categoryState.value == null) {
-               //        Toast.makeText(context,
-               //            R.string.please_fill_all_fields, Toast.LENGTH_SHORT)
-               //            .show()
-               //        return@Button
-               //    }
-
-               //    // Convert price to float
-               //    val price = priceState.value.toFloatOrNull()
-               //    if (price == null) {
-               //        Toast.makeText(context,
-               //            R.string.invalid_price, Toast.LENGTH_SHORT).show()
-               //        return@Button
-               //    }
-
-               //    viewModel.prepareListing(
-               //        Listing(
-               //            title = titleState.value,
-               //            description = descriptionState.value,
-               //            price = price,
-               //            category_id = categoryState.value!!.id,
-               //            image_urls = imageUrlsState.value
-               //        )
-               //    )
-               //    //viewModel.addItem(newListing)
-               //    navController.navigate(NavigationRoute.CheckboxGrid.route)
-               //    //navController.navigate(NavigationRoute.AddItemImagePicker.route)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(0.8f)
                     .widthIn(max = 800.dp)
-                    .padding(16.dp).padding(bottom = 100.dp),
+                    .padding(16.dp)
+                    .padding(bottom = 100.dp),
                 shape = RoundedCornerShape(8.dp) // squared corners
             ) {
                 Text(stringResource(R.string.next))
             }
-
-
         }
-
-
     }
 }
 

@@ -31,25 +31,24 @@ import com.example.earzikimarketplace.data.model.dataClass.DBCategory
 import com.example.earzikimarketplace.data.util.NavigationRoute
 
 @Composable
-fun CategoryCard(category: DBCategory, modifier: Modifier = Modifier, navController: NavController) {
+fun CategoryCard(
+    category:
+    DBCategory,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
 
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-        modifier = modifier
-            //.padding(end = 10.dp)
-            .width(175.dp)
-            .clickable {
-                val route = NavigationRoute.Marketplace.createRoute(category.categoryID)
-                navController.navigate(route)
-            }
-
-        //.height(240.dp)
-    ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
+    Card(shape = RoundedCornerShape(8.dp), elevation = CardDefaults.cardElevation(
+        defaultElevation = 4.dp
+    ), modifier = modifier
+        .width(175.dp)
+        .clickable {
+            val route = NavigationRoute.Marketplace.createRoute(category.categoryID)
+            navController.navigate(route)
+        }) {
+        Column(
+            modifier = Modifier.background(colorResource(R.color.white))
+        ) {
             Image(
                 painter = painterResource(id = category.imageRes),
                 contentDescription = category.categoryName,
@@ -59,7 +58,6 @@ fun CategoryCard(category: DBCategory, modifier: Modifier = Modifier, navControl
                     .fillMaxWidth()
             )
             Column(
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(60.dp)
                     .padding(horizontal = 8.dp)
@@ -79,9 +77,7 @@ fun CategoryCard(category: DBCategory, modifier: Modifier = Modifier, navControl
                         stringResource(R.string.items, count)
                     } else {
                         stringResource(R.string.loading)
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    }, style = MaterialTheme.typography.bodySmall, color = Color.Gray
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -92,18 +88,14 @@ fun CategoryCard(category: DBCategory, modifier: Modifier = Modifier, navControl
 @Composable
 fun PlaceholderCategoryCard(modifier: Modifier = Modifier) {
     Card(
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
+        shape = RoundedCornerShape(8.dp), elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
-        ),
-        modifier = modifier
-            //.padding(end = 10.dp)
+        ), modifier = modifier
             .width(175.dp)
-
-        //.height(240.dp)
     ) {
-        Column (modifier = Modifier.background(colorResource(R.color.white))
-        ){
+        Column(
+            modifier = Modifier.background(colorResource(R.color.white))
+        ) {
             Box(
                 modifier = Modifier
                     .height(150.dp)
@@ -111,7 +103,6 @@ fun PlaceholderCategoryCard(modifier: Modifier = Modifier) {
                     .background(Color.Gray)
             )
             Column(
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(60.dp)
                     .padding(horizontal = 8.dp)

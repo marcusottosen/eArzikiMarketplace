@@ -73,14 +73,12 @@ fun SearchBar(
                 Image(
                     painter = painterResource(id = R.drawable.filter),
                     contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(25.dp),
+                    modifier = Modifier.size(25.dp),
                     colorFilter = ColorFilter.tint(Color.White)
                 )
             }
             FilterDropdown(
-                expanded = expanded,
-                onSortSelected = onSortSelected, // Pass the method reference
+                expanded = expanded, onSortSelected = onSortSelected, // Pass the method reference
                 categoryID = categoryID
             )
         }
@@ -91,26 +89,21 @@ fun SearchBar(
             modifier = Modifier
                 .weight(1f)
                 .background(
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.shapes.small
+                    MaterialTheme.colorScheme.background, MaterialTheme.shapes.small
                 )
                 .border(
-                    width = 1.dp,
-                    color = Color.Gray,
-                    shape = RoundedCornerShape(50)
+                    width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(50)
                 )
         ) {
-            BasicTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(3.dp),
+            BasicTextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
                 value = searchText,
                 onValueChange = onSearchTextChanged,
                 singleLine = true,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 textStyle = LocalTextStyle.current.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = fontSize
+                    color = MaterialTheme.colorScheme.onSurface, fontSize = fontSize
                 ),
                 decorationBox = { innerTextField ->
                     Row(
@@ -135,12 +128,13 @@ fun SearchBar(
                         }
                         if (searchText.isNotEmpty()) {
                             IconButton(onClick = onClearClicked) {
-                                Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+                                Icon(
+                                    imageVector = Icons.Default.Close, contentDescription = "Clear"
+                                )
                             }
                         }
                     }
-                }
-            )
+                })
         }
 
         Spacer(modifier = Modifier.width(25.dp))
@@ -162,8 +156,7 @@ fun SearchBar(
                 Image(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = "Custom Icon",
-                    modifier = Modifier
-                        .size(25.dp),
+                    modifier = Modifier.size(25.dp),
                     colorFilter = ColorFilter.tint(Color.White)
                 )
             }

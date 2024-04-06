@@ -1,6 +1,5 @@
 package com.example.earzikimarketplace.ui.view.pages
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -57,7 +56,6 @@ import com.example.earzikimarketplace.data.model.dataClass.CategoryEnum
 import com.example.earzikimarketplace.data.model.dataClass.TagEnum
 import com.example.earzikimarketplace.data.model.dataClass.UiState
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
-import com.example.earzikimarketplace.ui.view.reuseables.FilterDropdown
 import com.example.earzikimarketplace.ui.view.reuseables.ItemCard
 import com.example.earzikimarketplace.ui.view.reuseables.SearchBar
 import com.example.earzikimarketplace.ui.viewmodel.MarketplaceViewModel
@@ -67,13 +65,15 @@ import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavController, pageCategoryID: Int) {
+fun MarketplaceScreen(
+    sharedViewModel: SharedViewModel,
+    navController: NavController,
+    pageCategoryID: Int
+) {
     val context = LocalContext.current
     val listingsDB = ListingsDB()
     val factory = MarketplaceViewModelFactory(listingsDB)
     val viewModel: MarketplaceViewModel = viewModel(factory = factory)
-
-    //val viewModel: MarketplaceViewModel = viewModel()
 
     // States and items
     val items by viewModel.items.observeAsState(initial = emptyList())
@@ -85,31 +85,26 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
     // Search
     var searchText by remember { mutableStateOf("") }
     val onSearchClicked = {
-        Log.d("Marketplace", "Search button clicked: $searchText")
         viewModel.searchItems(searchText)
     }
 
     // Handle the filter button
-    val showFilterMenu  = remember { mutableStateOf(false) }
+    val showFilterMenu = remember { mutableStateOf(false) }
     val onFilterClicked = {
-        Log.d("Marketplace", "Filter button clicked")
-        showFilterMenu .value = !showFilterMenu .value // Toggle visibility
+        showFilterMenu.value = !showFilterMenu.value // Toggle visibility
     }
 
     // Gets activated when the clear button is clicked
     val onClearSearchClicked = {
-        Log.d("Marketplace", "Clear button clicked")
         searchText = ""
     }
 
     val onTagClicked: (Int) -> Unit = { categoryID ->
-        Log.d("Marketplace", "Category button clicked: $categoryID")
         clickedTag.value = categoryID
     }
 
     // Fetch items on first load
     LaunchedEffect(key1 = true) {  // (key1 = true) = block runs only once
-        Log.d("MarketplaceScreen", "LaunchedEffect run, gathering listings")
         viewModel.fetchNextPage(pageCategoryID)
     }
     // Show toast when adding new item
@@ -119,8 +114,10 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
         }
 
         override fun onItemAddedSuccess() {
-            Toast.makeText(context,
-                context.getString(R.string.item_added_successfully), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.item_added_successfully), Toast.LENGTH_SHORT
+            ).show()
         }
 
         override fun onError(message: String) {
@@ -131,26 +128,26 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
     Scaffold(
         topBar = {
             val categoryEnum = CategoryEnum.fromId(pageCategoryID)
-            val categoryTitle = categoryEnum?.getTitle(context) ?: stringResource(R.string.unknown_category)
+            val categoryTitle =
+                categoryEnum?.getTitle(context) ?: stringResource(R.string.unknown_category)
             MarketPageTop(navController, categoryTitle, viewModel, pageCategoryID, onTagClicked)
         }
     ) { paddingValues ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(15.dp)
             ) {
-                //Spacer(modifier = Modifier.height(100.dp))
-
                 if (clickedTag.value == -1) {   // If no tag has been picked
                     SearchBar(
                         searchText = searchText,
                         onSearchTextChanged = { newText -> searchText = newText },
-                        onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside the lambda
+                        onSearchClicked = { onSearchClicked() }, // Explicitly call the function inside
                         onFilterClicked = { onFilterClicked() },
                         onClearClicked = { onClearSearchClicked() },
                         expanded = showFilterMenu,
@@ -207,7 +204,7 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize() // Fill the size of the parent
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(20.dp)) // Apply a size to the CircularProgressIndicator
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp))
                     }
                 } else {
                     LazyVerticalGrid(
@@ -233,13 +230,12 @@ fun MarketplaceScreen(sharedViewModel: SharedViewModel, navController: NavContro
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize() // Fill the size of the parent
                                 ) {
-                                    CircularProgressIndicator(modifier = Modifier.size(20.dp)) // Apply a size to the CircularProgressIndicator
+                                    CircularProgressIndicator(modifier = Modifier.size(20.dp))
                                 }
                             }
                         }
                     }
                 }
-
                 if (uiState == UiState.EMPTY) {
                     Text(stringResource(R.string.no_items_found))
                 }
@@ -269,7 +265,6 @@ fun MarketPageTop(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.verticalGradient(
-                        //colors = listOf(Color(0xFFFD5A0F), Color(0xFFFD7232))
                         colors = listOf(
                             MaterialTheme.colorScheme.primary,
                             MaterialTheme.colorScheme.surfaceTint
@@ -282,7 +277,6 @@ fun MarketPageTop(
                     .fillMaxWidth()
                     .align(Alignment.TopStart)
                     .padding(start = 0.dp, top = 0.dp),
-                //horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -302,10 +296,10 @@ fun MarketPageTop(
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    Spacer(modifier = Modifier.padding(end=48.dp))  // Size of IconButton. Used to center title
+                    Spacer(modifier = Modifier.padding(end = 48.dp))  // Size of IconButton. Used to center title
 
                 }
-                Spacer(modifier = Modifier.padding(top=0.dp))
+                Spacer(modifier = Modifier.padding(top = 0.dp))
 
                 VerticalScrollTags(viewModel, categoryID, onTagClicked)
 
@@ -329,7 +323,7 @@ fun VerticalScrollTags(
     viewModel: MarketplaceViewModel,
     categoryID: Int,
     onTagClicked: (Int) -> Unit
-){
+) {
     val context = LocalContext.current
     val tags = TagEnum.getAllTags()
 
@@ -368,7 +362,6 @@ fun VerticalScrollTags(
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
             }
         }

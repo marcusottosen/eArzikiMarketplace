@@ -61,6 +61,3 @@ fun FullScreenImageDialog(imageBitmap: ImageBitmap?, onDismiss: () -> Unit) {
         }
     }
 }
-
-
-

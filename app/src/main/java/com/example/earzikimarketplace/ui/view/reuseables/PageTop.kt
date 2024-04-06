@@ -39,8 +39,9 @@ fun PageTop(navController: NavController, title: String) {
                 .fillMaxWidth()
                 .background(
                     brush = Brush.verticalGradient(
-                        //colors = listOf(Color(0xFFFD5A0F), Color(0xFFFD7232))
-                        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surfaceTint)
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surfaceTint
+                        )
                     )
                 )
         ) {
@@ -69,12 +70,10 @@ fun PageTop(navController: NavController, title: String) {
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    Spacer(modifier = Modifier.padding(end=48.dp))  // Size of IconButton. Used to center title
+                    Spacer(modifier = Modifier.padding(end = 48.dp))  // Size of IconButton. Used to center title
 
                 }
-                Spacer(modifier = Modifier.padding(top=10.dp))
-
-
+                Spacer(modifier = Modifier.padding(top = 10.dp))
             }
         }
 

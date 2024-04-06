@@ -30,22 +30,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun AddItemStatusScreen(navController: NavController, viewModel: AddItemViewModel) {
-
     val addItemStatus by viewModel.addItemStatus.collectAsState()
 
-    // This LaunchedEffect is dedicated to the loading state
-    /*LaunchedEffect(key1 = addItemStatus, key2 = viewModel) {
-        if (addItemStatus is AddItemViewModel.AddItemStatus.Loading) {
-            // Keep the loading icon for at least 2 seconds
-            delay(4000)
-            // After the delay, if the status is still Loading, update it to Success
-            if (addItemStatus is AddItemViewModel.AddItemStatus.Loading) {
-                viewModel.updateStatus(AddItemViewModel.AddItemStatus.Success)
-            }
-        }
-    }*/
-
-    // This LaunchedEffect is dedicated to the success state
     LaunchedEffect(key1 = addItemStatus) {
         if (addItemStatus is AddItemViewModel.AddItemStatus.Success) {
             // Keep the success icon for 2 seconds before navigating away
@@ -70,6 +56,7 @@ fun AddItemStatusScreen(navController: NavController, viewModel: AddItemViewMode
                     Text(stringResource(R.string.preparing), color = Color.White)
                 }
             }
+
             is AddItemViewModel.AddItemStatus.Loading -> {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(modifier = Modifier.size(100.dp), color = Color.White)
@@ -77,6 +64,7 @@ fun AddItemStatusScreen(navController: NavController, viewModel: AddItemViewMode
                     Text(stringResource(R.string.uploading), color = Color.White)
                 }
             }
+
             is AddItemViewModel.AddItemStatus.Success -> {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
@@ -89,6 +77,7 @@ fun AddItemStatusScreen(navController: NavController, viewModel: AddItemViewMode
                     Text(stringResource(R.string.uploaded_successfully), color = Color.White)
                 }
             }
+
             is AddItemViewModel.AddItemStatus.Error -> {
                 Text(
                     text = "Failed: ${(addItemStatus as AddItemViewModel.AddItemStatus.Error).message}",

@@ -13,11 +13,13 @@ import com.example.earzikimarketplace.data.model.dataClass.UiState
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import kotlinx.coroutines.launch
 
-
+/**
+ * ViewModel responsible for managing the data related to the marketplace.
+ */
 class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
 
     private val _items = MutableLiveData<List<Listing>>() //actual list of all items
-    private val pageSize:Long= 10
+    private val pageSize: Long = 10
     private val _currentPage = MutableLiveData(0)
     private val _isLoading = MutableLiveData(false)
     private val _isPaginating = MutableLiveData(false)
@@ -32,13 +34,14 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
     private var priceAscending = true
 
 
-
     interface MarketplaceListener { // Used for the UI to observe the ViewModel and react from it.
         fun onValidationSuccess()
         fun onItemAddedSuccess()
         fun onError(message: String)
     }
+
     var listener: MarketplaceListener? = null   // Listener property
+
     init {
         // Add sources to MediatorLiveData
         _uiState.addSource(_items) { updateUiState() }
@@ -47,9 +50,8 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         // Initialize with loading state
         _uiState.value = UiState.LOADING
     }
+
     val uiState: LiveData<UiState> = _uiState
-
-
 
 
     // Update the UI state based on the data
@@ -61,9 +63,12 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         }
     }
 
+    /**
+     * Checks and fetches the next page of items if necessary.
+     *
+     * @param pageCategoryId The category ID of the current page.
+     */
     fun checkAndFetchNextPage(pageCategoryId: Int) {
-        Log.d("MarketplaceViewmodel", "checkAndFetchNextPage")
-
         if ((items.value?.size
                 ?: 0) >= _currentPage.value!! * pageSize && !_isLoading.value!! && !_allItemsLoaded.value!!
         ) {
@@ -71,16 +76,24 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         }
     }
 
-    // Call this when tag or sorting changes
+    /**
+     * Call this method when tag or sorting changes.
+     *
+     * @param categoryId The category ID.
+     * @param tag The tag ID.
+     */
     fun onTagOrSortingSelected(categoryId: Int, tag: Int?) {
-        Log.d("MarketplaceViewmodel", "onTagOrSortingSelected")
         _uiState.value = UiState.LOADING
         clearItems()
         fetchNextPage(categoryId, tag)
     }
 
-
-
+    /**
+     * Initiates the fetching of the next page of items.
+     *
+     * @param category The category of the items to fetch.
+     * @param tag The optional tag to filter the items by.
+     */
     fun fetchNextPage(category: Int, tag: Int? = null) {
         //Log.d("MarketplaceViewModel", "fetchNextPage: $category / $tag")
         if (_isLoading.value == true || _allItemsLoaded.value == true || _isPaginating.value == true) return
@@ -111,14 +124,13 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
                 // Check for duplicates and empty responses from the server
                 val existingIds = _items.value?.map { it.listing_id } ?: emptyList()
                 if (newItems.any { newItem: Listing -> existingIds.contains(newItem.listing_id) } || newItems.isEmpty()) {
-                    Log.d("MarketplaceViewModel", "Duplicate item found or empty list, stopping")
                     _allItemsLoaded.value = true
                 } else {
-                    Log.d("MarketplaceViewModel", "Adding ${newItems.size} items")
                     _items.value = (_items.value ?: emptyList()) + newItems
                     _currentPage.value = currentPage + 1
                 }
-                _uiState.value = if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
+                _uiState.value =
+                    if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
                 //updateUiState()
 
 
@@ -126,7 +138,8 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
                 // Handle error
                 Log.e("MarketplaceViewModel", "Error fetching items: ${e.message}")
             } finally {
-                _isPaginating.value = false // the state for fetching new data when user reaches the end of list.
+                _isPaginating.value =
+                    false // the state for fetching new data when user reaches the end of list.
                 _isLoading.value = false // Controls the initial data fetch state.
             }
         }
@@ -142,6 +155,12 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         _currentPage.value = 0
     }
 
+    /**
+     * Searches for items based on the given query.
+     * OBS search not working
+     *
+     * @param query The search query.
+     */
     fun searchItems(query: String) {
         clearItems()
         viewModelScope.launch {
@@ -150,9 +169,9 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
                 val result = listingsDB.searchListingsByTitle(searchQuery = query)
                 val newItems = result.getOrNull() ?: emptyList()
                 _items.value = newItems
-                _uiState.value = if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
+                _uiState.value =
+                    if (_items.value.isNullOrEmpty()) UiState.EMPTY else UiState.CONTENT
             } catch (e: Exception) {
-                // Handle error
                 Log.e("MarketplaceViewModel", "Error searching items: ${e.message}")
             } finally {
                 _isLoading.value = false
@@ -160,6 +179,12 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
         }
     }
 
+    /**
+     * Handles the selection of a sort option.
+     *
+     * @param optionId The ID of the selected sort option.
+     * @param categoryId The category ID to filter the items by.
+     */
     fun handleSortOptionSelected(optionId: Int, categoryId: Int) {
         val option = SortOption.values().find { it.id == optionId }
         when (option) {
@@ -173,12 +198,10 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
     }
 
     private fun sortItemsByNearest() {
-        Log.d("marketviewmodel", "sort by nearest item")
         // Implementation of sorting items by nearest
     }
 
     private fun sortItemsByDate(sortNewestFirst: Boolean, categoryId: Int) {
-        Log.d("marketviewmodel", "sort item by date. Newest: $sortNewestFirst")
         sortByPrice = false
         sortByDateDescending = sortNewestFirst
         onTagOrSortingSelected(categoryId = categoryId, tag = null)
@@ -191,6 +214,12 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
     }
 }
 
+/**
+ * Factory class for creating instances of [MarketplaceViewModel].
+ * Created to make test function.
+ *
+ * @property listingsDB The [ListingsDB] instance to be used by the ViewModel.
+ */
 class MarketplaceViewModelFactory(private val listingsDB: ListingsDB) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MarketplaceViewModel::class.java)) {
