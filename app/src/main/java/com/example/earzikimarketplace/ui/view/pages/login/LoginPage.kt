@@ -89,14 +89,9 @@ fun LoginPage(navController: NavController, sharedViewModel: SharedViewModel) {
         }
         Spacer(modifier = Modifier.padding(bottom = 50.dp))
 
-        val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
         LanguageSelector(
             sharedViewModel = sharedViewModel,
-            currentLanguage = currentLanguage,
-            onLanguageSelected = { newLanguage ->
-                // Handle language selection
-                setLocale(context, newLanguage) // Call setLocale with the new language code
-            }
+            context = context
         )
     }
 

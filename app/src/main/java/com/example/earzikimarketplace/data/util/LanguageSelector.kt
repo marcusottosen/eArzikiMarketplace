@@ -18,9 +18,10 @@ import java.util.Locale
 @Composable
 fun LanguageSelector(
     sharedViewModel: SharedViewModel,
-    currentLanguage: String,
-    onLanguageSelected: (String) -> Unit
+    context: Context
 ) {
+    val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
+
     val supportedLanguages = listOf("en", "fr", "ha")
 
     // Display current language
@@ -38,7 +39,8 @@ fun LanguageSelector(
             if (language != currentLanguage) {
                 Button(
                     onClick = {
-                        onLanguageSelected(language)
+                        //onLanguageSelected(language)
+                        setLocale(context, language)
                         sharedViewModel.updateLanguage()
                               },
                     modifier = Modifier.padding(8.dp)

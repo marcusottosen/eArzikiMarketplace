@@ -78,12 +78,15 @@ class SharedViewModel(
         super.onCleared()
     }
 
-
-
     fun updateLanguage() {
         val newLocale = getLanguageLocaleString(context)
         setTextToSpeechLanguage(newLocale)
     }
+    // ViewModel modification for testing
+    fun updateLanguageForTest(locale: Locale) {
+        setTextToSpeechLanguage(locale)
+    }
+
 
 
 

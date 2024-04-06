@@ -52,15 +52,10 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel, cont
 
             Spacer(modifier = Modifier.height(100.dp))
 
-            val currentLanguage = getLocalizedLanguageName(getCurrentLocale(context)) // Get the current language
 
             LanguageSelector(
                 sharedViewModel = sharedViewModel,
-                currentLanguage = currentLanguage,
-                onLanguageSelected = { newLanguage ->
-                    // Handle language selection here
-                    setLocale(context, newLanguage) // Call setLocale with the new language code
-                }
+                context = context
             )
 
             Spacer(modifier = Modifier.height(30.dp))
