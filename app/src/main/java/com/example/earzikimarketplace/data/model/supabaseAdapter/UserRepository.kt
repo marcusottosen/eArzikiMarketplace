@@ -3,7 +3,7 @@ package com.example.earzikimarketplace.data.model.supabaseAdapter
 import android.content.Context
 import android.util.Log
 import com.example.earzikimarketplace.data.model.dataClass.Location
-import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.dataClass.User
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.postgrest
 import java.util.UUID
@@ -47,7 +47,7 @@ class UserRepository() {
      * @return The signed-up user's data.
      * @throws Exception if an error occurs during sign-up.
      */
-    suspend fun signUpUserAuth(email: String, password: String, userData: UserSignUp): UserSignUp {
+    suspend fun signUpUserAuth(email: String, password: String, userData: User): User {
         val goTrue = SupabaseManager.getGoTrue()
 
         Log.d("New User", "Creating new user $email")
@@ -73,12 +73,12 @@ class UserRepository() {
      * @return The signed-up user's data.
      * @throws Exception if an error occurs during sign-up.
      */
-    private suspend fun signUpUserTable(userData_: UserSignUp): UserSignUp {
+    private suspend fun signUpUserTable(userData_: User): User {
         try {
             val client = SupabaseManager.getClient()
             val goTrue = SupabaseManager.getGoTrue()
             val user = goTrue.retrieveUserForCurrentSession(updateSession = true)
-            val userData = UserSignUp(
+            val userData = User(
                 user_id = UUID.fromString(user.id),
                 email = user.email,
                 firstname = userData_.firstname,
@@ -111,14 +111,14 @@ class UserRepository() {
  * @param userId The ID of the user.
  * @return The user's data.
  */
-suspend fun loadUser(userId: UUID): UserSignUp {
+suspend fun loadUser(userId: UUID): User {
     val client = SupabaseManager.getClient()
     val response = client.postgrest["users"].select {
         eq("user_id", userId.toString())
     }
     Log.d("UserRepository", "response: $response")
 
-    return response.decodeSingle<UserSignUp>()
+    return response.decodeSingle<User>()
 }
 
 /**
@@ -137,7 +137,7 @@ fun storeSessionToken(token: String, context: Context) {
  * @param context The application context.
  * @param userData The user's data to be stored.
  */
-fun storeUserData(context: Context, userData: UserSignUp) {
+fun storeUserData(context: Context, userData: User) {
 
     val sharedPreferences = context.getApplicationContext()
         .getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)

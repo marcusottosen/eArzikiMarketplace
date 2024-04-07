@@ -59,7 +59,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.earzikimarketplace.R
-import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.dataClass.User
 import com.example.earzikimarketplace.data.util.formatDayMonth
 import com.example.earzikimarketplace.data.util.formatHourMinute
 import com.example.earzikimarketplace.data.util.formatYear
@@ -336,7 +336,7 @@ fun ItemInfoPage(sharedViewModel: SharedViewModel, navController: NavController)
 }
 
 @Composable
-fun UserContactInfo(user: UserSignUp?, viewModel: SharedViewModel, itemTitle: String) {
+fun UserContactInfo(user: User?, viewModel: SharedViewModel, itemTitle: String) {
     val context = LocalContext.current
 
     Column(modifier = Modifier.padding(26.dp)) {

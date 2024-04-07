@@ -19,7 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.R
 import com.example.earzikimarketplace.data.model.dataClass.Listing
 import com.example.earzikimarketplace.data.model.dataClass.Location
-import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.dataClass.User
 import com.example.earzikimarketplace.data.model.supabaseAdapter.ListingsDB
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager.getSession
 import com.example.earzikimarketplace.data.model.supabaseAdapter.getLocationData
@@ -65,8 +65,8 @@ class SharedViewModel(
     private val _imageLoadingEnabled = MutableLiveData(true)
     val imageLoadingEnabled: LiveData<Boolean> = _imageLoadingEnabled
 
-    private val _userResult = MutableStateFlow<Result<UserSignUp>?>(null)
-    val userResult: StateFlow<Result<UserSignUp>?> = _userResult
+    private val _userResult = MutableStateFlow<Result<User>?>(null)
+    val userResult: StateFlow<Result<User>?> = _userResult
 
     private val _locationResult = MutableStateFlow<Result<Location>?>(null)
     val locationResult: StateFlow<Result<Location>?> = _locationResult

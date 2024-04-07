@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.earzikimarketplace.BuildConfig
-import com.example.earzikimarketplace.data.model.dataClass.UserSignUp
+import com.example.earzikimarketplace.data.model.dataClass.User
 import com.example.earzikimarketplace.data.model.supabaseAdapter.DefaultSupabaseClientFactory
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
 import com.example.earzikimarketplace.data.model.supabaseAdapter.UserRepository
@@ -55,7 +55,7 @@ class LoginViewModel() : ViewModel() {
         _signUpState.value = SignUpState.Loading
         val repository = UserRepository()
 
-        val userData = UserSignUp(
+        val userData = User(
             user_id = null,
             email = email,
             firstname = firstname,
