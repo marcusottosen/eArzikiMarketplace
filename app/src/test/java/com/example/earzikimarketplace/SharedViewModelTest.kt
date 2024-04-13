@@ -5,6 +5,7 @@ import android.os.Build
 import android.speech.tts.TextToSpeech
 import androidx.test.core.app.ApplicationProvider
 import com.example.earzikimarketplace.data.util.getCurrentLocale
+import com.example.earzikimarketplace.data.util.getLanguageLocaleString
 import com.example.earzikimarketplace.data.util.getLocalizedLanguageName
 import com.example.earzikimarketplace.data.util.setLocale
 import com.example.earzikimarketplace.ui.viewmodel.SharedViewModel
@@ -20,7 +21,10 @@ import org.mockito.kotlin.anyOrNull
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-
+import java.util.Locale
+import kotlin.test.assertEquals
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.R]) // R is API 30
@@ -64,7 +68,22 @@ class SharedViewModelTest {
         assertEquals("français", currentLanguage)
     }
 
+    @Test
+    fun `getLanguageLocaleString returns correct Locale object`() {
+        val context = mock(Context::class.java)
 
+        // Stubbing the method to return a simple language code
+        `when`(getCurrentLocale(context)).thenReturn("[es]")
+        var expectedLocale = Locale("es")
+        var resultLocale = getLanguageLocaleString(context)
+        assertEquals(expectedLocale, resultLocale, "Locale should match the simple language code.")
+
+        // Stubbing the method to return a language code with country
+        `when`(getCurrentLocale(context)).thenReturn("[en-US]")
+        expectedLocale = Locale("en", "US")
+        resultLocale = getLanguageLocaleString(context)
+        assertEquals(expectedLocale, resultLocale, "Locale should include both language and country code.")
+    }
     @After
     fun tearDown() {    // Cleaning up after tests
         sharedViewModel.onCleared()

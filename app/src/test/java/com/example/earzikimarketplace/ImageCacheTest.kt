@@ -16,9 +16,8 @@ class ImageCacheTest {
 
     @BeforeEach
     fun setUp() {
-        // Setup common objects used in the tests
         bitmap = mockk(relaxed = true)
-        ImageCache.clear() // Ensure the cache is clear before each test
+        ImageCache.clear() // clear before each test
     }
 
     @Test

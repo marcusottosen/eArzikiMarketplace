@@ -1,13 +1,24 @@
 package com.example.earzikimarketplace
 
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseClientFactory
+import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseClientNotInitializedException
 import com.example.earzikimarketplace.data.model.supabaseAdapter.SupabaseManager
-import io.mockk.mockk
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.PostgrestBuilder
+import io.github.jan.supabase.postgrest.query.PostgrestResult
+import io.ktor.http.Headers
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.verify
+import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import io.github.jan.supabase.SupabaseClient
+import org.testng.annotations.BeforeTest
+import java.nio.file.Path
+import kotlin.test.assertFailsWith
+
 
 class SupabaseManagerTest {
 
@@ -16,22 +27,45 @@ class SupabaseManagerTest {
 
     @BeforeEach
     fun setUp() {
-        // Initialize mocks
+        // Mock the factory and the SupabaseClient
         factory = mockk()
         supabaseClient = mockk(relaxed = true)
 
-        // returns the mocked client
+        // Setup the mock to return the mocked SupabaseClient when createSupabaseClient is called
         every { factory.createSupabaseClient(any(), any()) } returns supabaseClient
     }
 
     @Test
-    fun `initializeClient sets up SupabaseClient correctly`() {
-        val apiUrl: String = BuildConfig.ApiUrl
-        val apiKey: String = BuildConfig.ApiKey
+    fun `initialize Client successfully`() {
+        SupabaseManager.initializeClient("api-key", "api-url", factory)
 
-        SupabaseManager.initializeClient(apiKey, apiUrl, factory)
+        // Verify client was initialized
+        assertEquals(supabaseClient, SupabaseManager.getClient())
+    }
 
-        // Verify that the factory was used
-        verify { factory.createSupabaseClient(apiKey, apiUrl) }
+    @Test
+    fun `getClient throws if not initialized`() {
+        assertFailsWith<SupabaseClientNotInitializedException> {
+            SupabaseManager.getClient()
+        }
+    }
+}
+
+
+class MainKtTestMock {
+
+    private lateinit var supabaseClient : SupabaseClient
+
+    @BeforeTest
+    fun setUp() {
+
+        supabaseClient = mockk<SupabaseClient>()
+        val postgrest = mockk<Postgrest>()
+        val postgrestBuilder = mockk<PostgrestBuilder>()
+        val postgrestResult = PostgrestResult(body = null, headers = Headers.Empty)
+
+        every { supabaseClient.postgrest } returns postgrest
+        every { postgrest["path"] } returns postgrestBuilder
+        coEvery { postgrestBuilder.insert(values = any<List<Path>>()) } returns postgrestResult
     }
 }
