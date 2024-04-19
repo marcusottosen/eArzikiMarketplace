@@ -81,7 +81,7 @@ android {
 }
 
 dokkaHtml {
-    outputDirectory.set(file("../documentation/html"))
+    outputDirectory.set(file("../docs"))
 }
 
 dokkaGfm {
