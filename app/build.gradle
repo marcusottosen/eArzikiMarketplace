@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.8.10'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.10'
     id 'kotlin-parcelize'
+    id 'org.jetbrains.dokka' version '1.9.20'
 }
 
 android {
@@ -79,6 +80,14 @@ android {
     }
 }
 
+dokkaHtml {
+    outputDirectory.set(file("../documentation/html"))
+}
+
+dokkaGfm {
+    outputDirectory.set(file("../documentation/markdown"))
+}
+
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
@@ -133,5 +142,6 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.7.10")
 
+    dokkaPlugin 'org.jetbrains.dokka:android-documentation-plugin:1.9.20'
 
 }

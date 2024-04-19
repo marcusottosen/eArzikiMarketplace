@@ -55,7 +55,7 @@ class MarketplaceViewModelTest {
     }
 
     @Test
-    fun `fetchNextPage successfully fetches items`() = runTest {
+    fun testFetchNewPage() = runTest {
         viewModel.fetchNextPage(1)
 
         assertTrue(viewModel.items.value?.isNotEmpty() ?: false)
