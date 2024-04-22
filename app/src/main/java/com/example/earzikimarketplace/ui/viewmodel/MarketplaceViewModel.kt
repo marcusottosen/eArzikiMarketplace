@@ -163,6 +163,7 @@ class MarketplaceViewModel(private val listingsDB: ListingsDB) : ViewModel() {
      */
     fun searchItems(query: String) {
         clearItems()
+        //Log.d("MarketplaceVM search", "Initiating search for: $query")
         viewModelScope.launch {
             try {
                 _isLoading.value = true

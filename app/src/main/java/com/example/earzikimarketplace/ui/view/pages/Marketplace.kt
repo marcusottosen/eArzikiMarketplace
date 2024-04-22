@@ -97,6 +97,8 @@ fun MarketplaceScreen(
     // Gets activated when the clear button is clicked
     val onClearSearchClicked = {
         searchText = ""
+        viewModel.clearItems()
+        viewModel.fetchNextPage(pageCategoryID)
     }
 
     val onTagClicked: (Int) -> Unit = { categoryID ->

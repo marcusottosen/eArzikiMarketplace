@@ -125,7 +125,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
-    implementation platform("io.github.jan-tennert.supabase:bom:1.0.1")
+    implementation platform("io.github.jan-tennert.supabase:bom:1.1.0")
     implementation 'io.github.jan-tennert.supabase:postgrest-kt'
     implementation 'io.github.jan-tennert.supabase:gotrue-kt'
     implementation 'io.github.jan-tennert.supabase:storage-kt'

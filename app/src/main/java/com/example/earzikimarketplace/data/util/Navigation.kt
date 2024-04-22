@@ -43,14 +43,14 @@ fun Navigation(
     LaunchedEffect(key1 = "refreshSession") {  // Runs only once
         try {
             val session = getSession()
-            Log.d("Navigation", "Session: $session")
+            //Log.d("Navigation", "Session: $session")
 
             // Navigate based on valid session
             val destination = if (session.isEmpty() || session == "null") {
-                Log.d("Navigation", "Session is invalid")
+                //Log.d("Navigation", "Session is invalid")
                 NavigationRoute.Login.route
             } else {
-                Log.d("Navigation", "Session is valid")
+                //Log.d("Navigation", "Session is valid")
                 NavigationRoute.Home.route
             }
 

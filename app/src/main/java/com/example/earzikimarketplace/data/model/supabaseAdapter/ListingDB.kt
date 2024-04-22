@@ -86,26 +86,26 @@ class ListingsDB() {
      * Searches for listings by title.
      * @param searchQuery The search query.
      * @return A Result containing the list of retrieved listings.
+     *
+     * OSB: DOES NOT WORK
      */
-    suspend fun searchListingsByTitle(
-        searchQuery: String
-    ): Result<List<Listing>> {
+    suspend fun searchListingsByTitle(searchQuery: String): Result<List<Listing>> {
+        Log.d("ListingDB search", "Starting to search for $searchQuery")
         return try {
             val client = SupabaseManager.getClient()
-            val response = client.postgrest["users"].select {
-                textSearch(
-                    column = "firstname",
-                    query = "my",
-                    textSearchType = TextSearchType.PLAINTO
-                )
+
+            val response = client.postgrest["Listings"].select {
+                textSearch(column = "title", query = searchQuery, config = "english", textSearchType = TextSearchType.PLAINTO)
             }
             val data = response.decodeList<Listing>()
+            //Log.d("ListingDB search", "Data reply: $data")
             Result.success(data)
         } catch (e: Exception) {
-            Log.e("supabase", "Error searching listings by title: ${e.message}")
+            //Log.e("supabase", "Error searching listings by title: ${e.message}")
             Result.failure(e)
         }
     }
+
 
     /**
      * Retrieves the image of an item from Supabase Storage.

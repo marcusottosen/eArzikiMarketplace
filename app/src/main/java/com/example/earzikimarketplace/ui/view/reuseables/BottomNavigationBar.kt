@@ -40,7 +40,7 @@ fun BottomNavigationBar(navController: NavController) {
         // Allow for others pages to keep the nav item "active"
         val isHomeActive =
             currentRoute == NavigationItem.Home.route || currentRoute?.startsWith(NavigationRoute.Marketplace.route) == true || currentRoute == NavigationRoute.ItemDetails.route
-        Log.d("bottomNavBar", isHomeActive.toString())
+        //Log.d("bottomNavBar", isHomeActive.toString())
         items.forEach { item ->
             val isSelected = when (item) {
                 NavigationItem.Home -> isHomeActive
